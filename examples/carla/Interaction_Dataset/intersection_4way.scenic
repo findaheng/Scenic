@@ -18,29 +18,18 @@ EGO_MODEL = 'vehicle.lincoln.mkz2017'
 EGO_SPEED = 10
 EGO_BRAKE = 1.0
 
-ADV_SPEED = (5, 15)
+ADV_SPEED = 10
+ADV_BRAKE = 1.0
 
-SAFETY_DISTANCE = 20
-
-#################################
-# AGENT BEHAVIORS               #
-#################################
-
-behavior EgoBehavior(speed, trajectory):
-	try:
-		do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
-		do FollowLaneBehavior(target_speed=speed)
-	interrupt when withinDistanceToAnyObjs(self, SAFETY_DISTANCE):
-		take SetBrakeAction(BRAKE_INTENSITY)
-
-behavior AdversaryBehavior(speed, trajectory):
-	FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
+STOP_DURATION = 50
+STOP_DIST = 5
+SAFETY_DIST = 20
 
 #################################
 # SPATIAL RELATIONS             #
 #################################
 
-fourWayIntersections = filter(lambda i: i.is4Way and i.isSignalized, network.intersections)
+fourWayIntersections = filter(lambda i: i.is4Way and not i.isSignalized, network.intersections)
 assert len(fourWayIntersections) > 0, f'No signalized 4-way intersections in {carla_map} map'
 
 # Choose random 4-way intersection
@@ -55,6 +44,29 @@ advManeuver = Uniform(*egoManeuver.conflictingManeuvers)
 advStartLane = advManeuver.startLane
 advTrajectory = [advStartLane, advManeuver.connectingLane, advManeuver.endLane]
 advSpawnPt = OrientedPoint on advStartLane.centerline
+
+#################################
+# AGENT BEHAVIORS               #
+#################################
+
+behavior EgoBehavior(speed, trajectory):
+	stopped_ctr = 0
+	try:
+		do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
+		do FollowLaneBehavior(target_speed=speed)
+	interrupt when (distance to intersection) < STOP_DIST and stopped_ctr < STOP_DURATION:
+		take SetBrakeAction(EGO_BRAKE)
+		stopped_ctr += 1
+	interrupt when withinDistanceToAnyObjs(self, SAFETY_DIST):
+		take SetBrakeAction(EGO_BRAKE)
+
+behavior AdversaryBehavior(speed, trajectory):
+	stopped_ctr = 0
+	try:
+		take FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
+	interrupt when (distance to intersection) < STOP_DIST and stopped_ctr < STOP_DURATION:
+		take SetBrakeAction(ADV_BRAKE)
+		stopped_ctr += 1
 
 #################################
 # OBJECT PLACEMENT              #
