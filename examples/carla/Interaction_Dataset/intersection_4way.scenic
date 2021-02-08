@@ -29,7 +29,8 @@ SAFETY_DIST = 20
 # SPATIAL RELATIONS             #
 #################################
 
-fourWayIntersections = filter(lambda i: i.is4Way and not i.isSignalized, network.intersections)
+# TODO: Figure out why intersection object has no isSignalized attribute
+fourWayIntersections = filter(lambda i: i.is4Way, network.intersections)
 assert len(fourWayIntersections) > 0, f'No signalized 4-way intersections in {carla_map} map'
 
 # Choose random 4-way intersection
