@@ -64,7 +64,7 @@ behavior EgoBehavior(speed, trajectory):
 behavior AdversaryBehavior(speed, trajectory):
 	stopped_ctr = 0
 	try:
-		take FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
+		do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
 	interrupt when (distance to intersection) < STOP_DIST and stopped_ctr < STOP_DURATION:
 		take SetBrakeAction(ADV_BRAKE)
 		stopped_ctr += 1
