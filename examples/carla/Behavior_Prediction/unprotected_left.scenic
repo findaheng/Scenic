@@ -34,7 +34,6 @@ TERM_DIST = 70
 # TODO: Figure out why intersection object has no isSignalized attribute
 fourWayIntersections = filter(lambda i: i.is4Way, network.intersections)
 assert len(fourWayIntersections) > 0, f'No signalized 4-way intersections in {carla_map} map'
-assert 
 intersection = Uniform(*fourWayIntersections)
 
 egoStartLane = Uniform(*intersection.incomingLanes)
