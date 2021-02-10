@@ -37,11 +37,11 @@ assert len(fourWayIntersections) > 0, f'No signalized 4-way intersections in {ca
 intersection = Uniform(*fourWayIntersections)
 
 egoStartLane = Uniform(*intersection.incomingLanes)
-egoManeuver = network.ManeuverType.STRAIGHT
+egoManeuver = Uniform(*[m for m in egoStartLane.maneuvers if m is ManeuverType.STRAIGHT])
 egoTrajectory = [egoStartLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint on egoStartLane.centerline
 
-advManeuver = Uniform(*[m for m in egoManeuver.conflictingManeuvers if m.type is network.ManeuverType.LEFT_TURN and m.startLane.road is egoStartLane.road])
+advManeuver = Uniform(*[m for m in egoManeuver.conflictingManeuvers if m.type is ManeuverType.LEFT_TURN and m.startLane.road is egoStartLane.road])
 advStartLane = advManeuver.startLane
 advTrajectory = [advStartLane, advManeuver.connectingLane, advManeuver.endLane]
 advSpawnPt = OrientedPoint on advStartLane.centerline
