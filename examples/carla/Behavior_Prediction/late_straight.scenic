@@ -1,5 +1,5 @@
 """ Scenario Descripton
-Signalized intersection in which ego vehicle goes straight, and adversary vehicle goes straight after light had turned red already.
+Signalized intersection in which ego vehicle goes straight and must stop suddenly because adversary vehicle goes straight from perpendicular lane after light had turned red.
 """
 
 #################################
