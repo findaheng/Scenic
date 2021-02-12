@@ -39,7 +39,10 @@ egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoStar
 egoTrajectory = [egoStartLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint in egoStartLane.centerline
 
-advStartLane = [lane for lane in intersection.incomingLanes if not Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, lane.maneuvers).connectingLane.centerline.intersects(egoStartLane.centerline))][0]
+advStartLane = Uniform(*filter( \
+	lambda l: not Uniform(*filter( \
+		lambda m: m.type is ManeuverType.STRAIGHT, l.maneuvers).connectingLane.centerline.intersects(egoStartLane.centerline)), \
+	intersection.incomingLanes))
 advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.LEFT_TURN, advStartLane.maneuvers))
 # advManeuver = Uniform(*filter( \
 # 	lambda m: m.type is ManeuverType.LEFT_TURN and m.startLane.road == egoStartLane.road, \
