@@ -31,22 +31,22 @@ TERM_DIST = 70
 # SPATIAL RELATIONS             #
 #################################
 
-# TODO: Figure out why intersection object has no isSignalized attribute
-fourWayIntersections = filter(lambda i: i.is4Way, network.intersections)
-assert len(fourWayIntersections) > 0, f'No signalized 4-way intersections in {carla_map} map'
+fourWayIntersections = filter(lambda i: i.is4Way and i.isSignalized, network.intersections)
 intersection = Uniform(*fourWayIntersections)
 
 egoStartLane = Uniform(*intersection.incomingLanes)
-egoManeuver = Uniform(*filter(lambda m: m.type == ManeuverType.STRAIGHT, egoStartLane.maneuvers))
+egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoStartLane.maneuvers))
 egoTrajectory = [egoStartLane, egoManeuver.connectingLane, egoManeuver.endLane]
-egoSpawnPt = OrientedPoint on egoStartLane.centerline
+egoSpawnPt = OrientedPoint in egoStartLane.centerline
 
-advManeuver = Uniform(*filter( \
-	lambda m: m.type == ManeuverType.LEFT_TURN and m.startLane.road is egoStartLane.road, \
-	egoManeuver.conflictingManeuvers))
-advStartLane = advManeuver.startLane
+advStartLane = [lane for lane in intersection.incomingLanes if not Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, lane.maneuvers).connectingLane.centerline.intersects(egoStartLane.centerline))][0]
+advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.LEFT_TURN, advStartLane.maneuvers))
+# advManeuver = Uniform(*filter( \
+# 	lambda m: m.type is ManeuverType.LEFT_TURN and m.startLane.road == egoStartLane.road, \
+# 	egoManeuver.conflictingManeuvers))
+# advStartLane = advManeuver.startLane
 advTrajectory = [advStartLane, advManeuver.connectingLane, advManeuver.endLane]
-advSpawnPt = OrientedPoint on advStartLane.centerline
+advSpawnPt = OrientedPoint in advStartLane.centerline
 
 #################################
 # AGENT BEHAVIORS               #
