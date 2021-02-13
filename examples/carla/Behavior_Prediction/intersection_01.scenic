@@ -1,9 +1,9 @@
 """
 TITLE: Behavior Prediction - Intersection 01
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Ego vehicle goes straight at signalized intersection and 
-must suddenly stop to avoid collision when oncoming adversary vehicle 
-makes an unprotected left turn.
+DESCRIPTION: Ego vehicle goes either straight or left at signalized 
+intersection and must suddenly stop to avoid collision when adversary 
+vehicle from parallel lane makes an unprotected left turn.
 """
 
 #################################
@@ -38,7 +38,6 @@ TERM_DIST = 70
 behavior EgoBehavior(speed, trajectory):
 	try:
 		do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
-		do FollowLaneBehavior(target_speed=speed)
 	interrupt when withinDistanceToAnyObjs(self, SAFETY_DIST):
 		take SetBrakeAction(EGO_BRAKE)
 
@@ -53,16 +52,17 @@ intersection = Uniform(*filter(lambda i: i.is4Way and i.isSignalized, network.in
 
 advStartLane = Uniform(*intersection.incomingLanes)
 
-advStraightManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advStartLane.maneuvers))
-egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advStraightManeuver.conflictingManeuvers))
+egoManeuver = Uniform(*filter(lambda m: \
+	m.type is ManeuverType.STRAIGHT or m.type is ManeuverType.LEFT_TURN,
+	Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advStartLane.maneuvers))
+		.conflictingManeuvers))
+egoStartLane = egoManeuver.startLane
+egoTrajectory = [egoStartLane, egoManeuver.connectingLane, egoManeuver.endLane]
+egoSpawnPt = OrientedPoint in egoStartLane.centerline
 
 advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.LEFT_TURN, advStartLane.maneuvers))
 advTrajectory = [advStartLane, advManeuver.connectingLane, advManeuver.endLane]
 advSpawnPt = OrientedPoint in advStartLane.centerline
-
-egoStartLane = egoManeuver.startLane
-egoTrajectory = [egoStartLane, egoManeuver.connectingLane, egoManeuver.endLane]
-egoSpawnPt = OrientedPoint in egoStartLane.centerline
 
 #################################
 # SCENARIO SPECIFICATION        #
