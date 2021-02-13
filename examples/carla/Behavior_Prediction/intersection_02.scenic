@@ -52,6 +52,11 @@ behavior AdversaryBehavior(speed, trajectory):
 intersection = Uniform(*filter(lambda i: i.is4Way and i.isSignalized, network.intersections))
 
 advStartLane = Uniform(*intersection.incomingLanes)
+advManeuver = Uniform(*filter(lambda m:
+		m.type in (ManeuverType.STRAIGHT, ManeuverType.LEFT_TURN),
+		advStartLane.maneuvers))
+advTrajectory = [advStartLane, advManeuver.connectingLane, advManeuver.endLane]
+advSpawnPt = OrientedPoint in advStartLane.centerline
 
 egoStartLane = Uniform(*filter(lambda m:
 		m.type is ManeuverType.STRAIGHT,
@@ -63,12 +68,6 @@ egoManeuver = Uniform(*filter(lambda m:
 		egoStartLane.maneuvers))
 egoTrajectory = [egoStartLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint in egoStartLane.centerline
-
-advManeuver = Uniform(*filter(lambda m:
-		m.type in (ManeuverType.STRAIGHT, ManeuverType.LEFT_TURN),
-		advStartLane.maneuvers))
-advTrajectory = [advStartLane, advManeuver.connectingLane, advManeuver.endLane]
-advSpawnPt = OrientedPoint in advStartLane.centerline
 
 #################################
 # SCENARIO SPECIFICATION        #
