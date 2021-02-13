@@ -53,20 +53,20 @@ intersection = Uniform(*filter(lambda i: i.is4Way and i.isSignalized, network.in
 
 advStartLane = Uniform(*intersection.incomingLanes)
 
-egoStartLane = Uniform(*filter(lambda m: \
+egoStartLane = (Uniform(*filter(lambda m:
 		m.type is ManeuverType.STRAIGHT,
 		Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advStartLane.maneuvers))
 			.conflictingManeuvers))
-	.startLane
-egoManeuver = Uniform(*filter(lambda m: \
+	).startLane
+egoManeuver = Uniform(*filter(lambda m:
 		m.type is ManeuverType.STRAIGHT or m.type is ManeuverType.LEFT_TURN,
 		egoStartLane.maneuvers))
 egoTrajectory = [egoStartLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint in egoStartLane.centerline
 
-advManeuver = Uniform(*filter(lambda m: \
-	m.type is ManeuverType.STRAIGHT or m.type is ManeuverType.LEFT_TURN,
-	advStartLane.maneuvers))
+advManeuver = Uniform(*filter(lambda m:
+		m.type is ManeuverType.STRAIGHT or m.type is ManeuverType.LEFT_TURN,
+		advStartLane.maneuvers))
 advTrajectory = [advStartLane, advManeuver.connectingLane, advManeuver.endLane]
 advSpawnPt = OrientedPoint in advStartLane.centerline
 
