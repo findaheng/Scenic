@@ -175,7 +175,7 @@ class Maneuver(_ElementReferencer):
     @property
     @utils.cached
     def disjointManeuvers(self) -> Tuple[Maneuver]:
-        """Tuple[Maneuver]: Maneuvers whose connecting lanes do not intersect this one's."""
+        """Tuple[Maneuver]: Maneuvers from different roads whose connecting lanes do not intersect this one's."""
         if not self.connectingLane:
             return ()
         guideway = self.connectingLane
@@ -183,6 +183,7 @@ class Maneuver(_ElementReferencer):
         conflicts = []
         for maneuver in self.intersection.maneuvers:
             if (maneuver.startLane is not start
+                and maneuver.startLane.road is not start.road
                 and not maneuver.connectingLane.centerline.intersects(guideway.centerline)):
                 conflicts.append(maneuver)
         return tuple(conflicts)
