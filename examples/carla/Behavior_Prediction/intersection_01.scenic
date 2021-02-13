@@ -51,17 +51,18 @@ behavior AdversaryBehavior(speed, trajectory):
 
 intersection = Uniform(*filter(lambda i: i.is4Way and i.isSignalized, network.intersections))
 
-egoStartLane = Uniform(*intersection.incomingLanes)
-egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoStartLane.maneuvers))
-egoTrajectory = [egoStartLane, egoManeuver.connectingLane, egoManeuver.endLane]
-egoSpawnPt = OrientedPoint in egoStartLane.centerline
+advStartLane = Uniform(*intersection.incomingLanes)
 
-advManeuver = Uniform(*filter( \
-	lambda m: m.type is ManeuverType.LEFT_TURN and m.startLane.road is egoManeuver.endLane.road, 
-	egoManeuver.conflictingManeuvers))
-advStartLane = advManeuver.startLane
+advStraightManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advStartLane.maneuvers))
+egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advStartManeuver.conflictingManeuvers))
+
+advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.LEFT_TURN, advStartLane.maneuvers))
 advTrajectory = [advStartLane, advManeuver.connectingLane, advManeuver.endLane]
 advSpawnPt = OrientedPoint in advStartLane.centerline
+
+egoStartLane = egoManeuver.startLane
+egoTrajectory = [egoStartLane, egoManeuver.connectingLane, egoManeuver.endLane]
+egoSpawnPt = OrientedPoint in egoStartLane.centerline
 
 #################################
 # SCENARIO SPECIFICATION        #
@@ -77,4 +78,4 @@ adversary = Car at advSpawnPt,
 
 require EGO_INIT_DIST[0] <= (distance from ego to intersection) <= EGO_INIT_DIST[1]
 require ADV_INIT_DIST[0] <= (distance from adversary to intersection) <= EGO_INIT_DIST[1]
-terminate when (distance to egoSpawnPt) > TERM_DIST
+terminate when (distance from ego to egoSpawnPt) > TERM_DIST
