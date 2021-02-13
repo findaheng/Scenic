@@ -172,6 +172,21 @@ class Maneuver(_ElementReferencer):
                 conflicts.append(maneuver)
         return tuple(conflicts)
 
+    @property
+    @utils.cached
+    def disjointManeuvers(self) -> Tuple[Maneuver]:
+        """Tuple[Maneuver]: Maneuvers whose connecting lanes do not intersect this one's."""
+        if not self.connectingLane:
+            return ()
+        guideway = self.connectingLane
+        start = self.startLane
+        conflicts = []
+        for maneuver in self.intersection.maneuvers:
+            if (maneuver.startLane is not start
+                and not maneuver.connectingLane.centerline.intersects(guideway.centerline)):
+                conflicts.append(maneuver)
+        return tuple(conflicts)
+
 ## Road networks
 
 @attr.s(auto_attribs=True, kw_only=True, repr=False)
