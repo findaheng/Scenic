@@ -1,10 +1,10 @@
 """
 TITLE: Behavior Prediction - Intersection 02
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Ego vehicle goes either straight or left at signalized 
-intersection and must suddenly stop to avoid collision when adversary 
-vehicle from perpendicular lane continues shortly after red light, 
-going either straight or left.
+DESCRIPTION: Ego vehicle either goes straight or makes an unprotected 
+left turn at signalized intersection and must suddenly stop to avoid 
+collision when adversary vehicle from perpendicular lane continues 
+shortly after red light, going either straight or left.
 """
 
 #################################
@@ -53,19 +53,19 @@ intersection = Uniform(*filter(lambda i: i.is4Way and i.isSignalized, network.in
 
 advStartLane = Uniform(*intersection.incomingLanes)
 
-egoStartLane = (Uniform(*filter(lambda m:
+egoStartLane = Uniform(*filter(lambda m:
 		m.type is ManeuverType.STRAIGHT,
 		Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advStartLane.maneuvers))
-			.conflictingManeuvers))
+			.conflictingManeuvers)
 	).startLane
 egoManeuver = Uniform(*filter(lambda m:
-		m.type is ManeuverType.STRAIGHT or m.type is ManeuverType.LEFT_TURN,
+		m.type in (ManeuverType.STRAIGHT, ManeuverType.LEFT_TURN),
 		egoStartLane.maneuvers))
 egoTrajectory = [egoStartLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint in egoStartLane.centerline
 
 advManeuver = Uniform(*filter(lambda m:
-		m.type is ManeuverType.STRAIGHT or m.type is ManeuverType.LEFT_TURN,
+		m.type in (ManeuverType.STRAIGHT, ManeuverType.LEFT_TURN),
 		advStartLane.maneuvers))
 advTrajectory = [advStartLane, advManeuver.connectingLane, advManeuver.endLane]
 advSpawnPt = OrientedPoint in advStartLane.centerline
