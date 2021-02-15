@@ -22,7 +22,7 @@ ADV_SPEED = 10
 
 BYPASS_DIST = (15, 15)
 INIT_DIST = 50
-TERM_DIST = 30
+TERM_TIME = 5
 
 #################################
 # AGENT BEHAVIORS               #
@@ -39,6 +39,11 @@ behavior AdversaryBehavior(speed):
 				target_speed=speed,
 				laneToFollow=fasterLane.lane) \
 			until (distance to ego) > BYPASS_DIST[1]
+		do LaneChangeBehavior(
+				laneSectionToSwitch=self.laneSection.slowerLane,
+				target_speed=speed)
+		do FollowLaneBehavior(target_speed=speed) for TERM_TIME seconds
+		terminate 
 
 #################################
 # SPATIAL RELATIONS             #
@@ -60,4 +65,3 @@ ego = Car ahead of adversary by Range(10, 25),
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
 require always (ego.laneSection._fasterLane is not None)
-terminate when (distance from adversary to ego) > TERM_DIST
