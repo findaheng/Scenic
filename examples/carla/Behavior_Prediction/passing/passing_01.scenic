@@ -32,15 +32,17 @@ behavior EgoBehavior(speed):
 	try:
 		do FollowLaneBehavior(target_speed=speed)
 	interrupt when withinDistanceToAnyObjs(self, BYPASS_DIST[0]):
+		fasterLane = self.laneSection.fasterLane
 		do LaneChangeBehavior(
-				laneSectionToSwitch=self.laneSection.fasterLane,
+				laneSectionToSwitch=fasterLane,
 				target_speed=speed)
 		do FollowLaneBehavior(
 				target_speed=speed,
 				laneToFollow=fasterLane.lane) \
 			until (distance to adversary) > BYPASS_DIST[1]
+		slowerLane = self.laneSection.slowerLane
 		do LaneChangeBehavior(
-				laneSectionToSwitch=self.laneSection.slowerLane,
+				laneSectionToSwitch=slowerLane,
 				target_speed=speed)
 		do FollowLaneBehavior(target_speed=speed) for TERM_TIME seconds
 		terminate 
