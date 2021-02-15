@@ -52,17 +52,17 @@ behavior AdversaryBehavior(speed):
 #################################
 
 initLane = Uniform(*network.lanes)
-advSpawnPt = OrientedPoint in initLane.centerline
+egoSpawnPt = OrientedPoint in initLane.centerline
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-adversary = Car at advSpawnPt,
-	with behavior AdversaryBehavior(EGO_SPEED)
+ego = Car at advSpawnPt,
+	with behavior FollowLaneBehavior(EGO_SPEED)
 
-ego = Car ahead of adversary by Range(10, 25),
-	with behavior FollowLaneBehavior(ADV_SPEED)
+adversary = Car following roadDirection for Range(-25, -10),
+	with behavior AdversaryBehavior(ADV_SPEED)
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
