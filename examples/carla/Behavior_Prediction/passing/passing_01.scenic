@@ -22,7 +22,7 @@ ADV_SPEED = 3
 
 BYPASS_DIST = (15, 15)
 INIT_DIST = 50
-TERM_DIST = 70
+TERM_DIST = 30
 
 #################################
 # AGENT BEHAVIORS               #
@@ -60,4 +60,4 @@ adversary = Car following roadDirection for Range(10, 25),
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
 require always (adversary.laneSection._fasterLane is not None)
-terminate when (distance to egoSpawnPt) > TERM_DIST
+terminate when (distance to adversary) > TERM_DIST

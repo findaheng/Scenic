@@ -22,7 +22,7 @@ ADV_SPEED = 10
 
 BYPASS_DIST = (15, 15)
 INIT_DIST = 50
-TERM_DIST = 70
+TERM_DIST = 30
 
 #################################
 # AGENT BEHAVIORS               #
@@ -54,10 +54,10 @@ advSpawnPt = OrientedPoint in initLane.centerline
 adversary = Car at advSpawnPt,
 	with behavior AdversaryBehavior(EGO_SPEED)
 
-ego = Car following roadDirection for Range(10, 25),
+ego = Car ahead of adversary by Range(10, 25),
 	with behavior FollowLaneBehavior(ADV_SPEED)
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
 require always (ego.laneSection._fasterLane is not None)
-terminate when (distance from adversary to advSpawnPt) > TERM_DIST
+terminate when (distance from adversary to ego) > TERM_DIST
