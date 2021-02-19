@@ -76,4 +76,4 @@ adversary = Car at advSpawnPt,
 
 require STAT_INIT_DIST[0] <= (distance from stationary to intersection) <= STAT_INIT_DIST[1]
 require ADV_INIT_DIST[0] <= (distance from adversary to intersection) <= EGO_INIT_DIST[1]
-terminate when (distance to egoSpawnPt) > TERM_DIST
+terminate when (distance to statSpawnPt) > TERM_DIST
