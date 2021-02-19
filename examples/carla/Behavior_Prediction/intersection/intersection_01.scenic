@@ -1,10 +1,9 @@
 """
 TITLE: Behavior Prediction - Intersection 01
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Ego vehicle either goes straight or makes an unprotected 
-left turn at signalized intersection and must suddenly stop to avoid 
-collision when adversary vehicle from parallel lane makes an 
-unprotected left turn.
+DESCRIPTION: Ego vehicle goes straight at signalized intersection and 
+must suddenly stop to avoid collision when adversary vehicle from 
+oncoming parallel lane makes an unprotected left turn.
 """
 
 #################################
@@ -50,9 +49,7 @@ behavior AdversaryBehavior(speed, trajectory):
 intersection = Uniform(*filter(lambda i: i.is4Way and i.isSignalized, network.intersections))
 
 egoInitLane = Uniform(*intersection.incomingLanes)
-egoManeuver = Uniform(*filter(lambda m:
-	m.type in (ManeuverType.STRAIGHT, ManeuverType.LEFT_TURN),
-	egoInitLane.maneuvers))
+egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoInitLane.maneuvers))
 egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint in egoInitLane.centerline
 
