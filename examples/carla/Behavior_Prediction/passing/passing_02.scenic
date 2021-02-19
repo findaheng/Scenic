@@ -20,7 +20,7 @@ model scenic.simulators.carla.model
 EGO_SPEED = 3
 ADV_SPEED = 10
 
-BYPASS_DIST = (15, 15)
+BYPASS_DIST = [15, 15]
 INIT_DIST = 50
 TERM_TIME = 5
 
@@ -32,17 +32,17 @@ behavior AdversaryBehavior(speed):
 	try:
 		do FollowLaneBehavior(target_speed=speed)
 	interrupt when withinDistanceToAnyObjs(self, BYPASS_DIST[0]):
-		fasterLane = self.laneSection.fasterLane
+		fasterLaneSec = self.laneSection.fasterLane
 		do LaneChangeBehavior(
-				laneSectionToSwitch=fasterLane,
+				laneSectionToSwitch=fasterLaneSec,
 				target_speed=speed)
 		do FollowLaneBehavior(
 				target_speed=speed,
-				laneToFollow=fasterLane.lane) \
+				laneToFollow=fasterLaneSec.lane) \
 			until (distance to adversary) > BYPASS_DIST[1]
-		slowerLane = self.laneSection.slowerLane
+		slowerLaneSec = self.laneSection.slowerLane
 		do LaneChangeBehavior(
-				laneSectionToSwitch=slowerLane,
+				laneSectionToSwitch=slowerLaneSec,
 				target_speed=speed)
 		do FollowLaneBehavior(target_speed=speed) for TERM_TIME seconds
 		terminate 

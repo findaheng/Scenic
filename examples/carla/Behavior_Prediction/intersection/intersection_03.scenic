@@ -19,13 +19,12 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
-EGO_INIT_DIST = (20, 25)
+EGO_INIT_DIST = [20, 25]
 EGO_SPEED = 8
 EGO_BRAKE = 1.0
 
-ADV_INIT_DIST = (15, 20)
+ADV_INIT_DIST = [15, 20]
 ADV_SPEED = 10
-ADV_BRAKE = 1.0
 
 SAFETY_DIST = 20
 TERM_DIST = 70
