@@ -39,9 +39,6 @@ behavior EgoBehavior(speed, trajectory):
 	interrupt when withinDistanceToAnyObjs(self, SAFETY_DIST):
 		take SetBrakeAction(EGO_BRAKE)
 
-behavior AdversaryBehavior(speed, trajectory):
-	do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
-
 #################################
 # SPATIAL RELATIONS             #
 #################################
@@ -72,7 +69,7 @@ ego = Car at egoSpawnPt,
 	with behavior EgoBehavior(EGO_SPEED, egoTrajectory)
 
 adversary = Car at advSpawnPt,
-	with behavior AdversaryBehavior(ADV_SPEED, advTrajectory)
+	with behavior FollowTrajectoryBehavior(target_speed=ADV_SPEED, trajectory=advTrajectory)
 
 require EGO_INIT_DIST[0] <= (distance to intersection) <= EGO_INIT_DIST[1]
 require ADV_INIT_DIST[0] <= (distance from adversary to intersection) <= EGO_INIT_DIST[1]

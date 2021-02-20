@@ -59,7 +59,7 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 #################################
 
 ego = Car at egoSpawnPt,
-	with behavior FollowLaneBehavior(EGO_SPEED)
+	with behavior FollowLaneBehavior(target_speed=EGO_SPEED)
 
 adversary = Car following roadDirection for Range(-25, -10),
 	with behavior AdversaryBehavior(ADV_SPEED)

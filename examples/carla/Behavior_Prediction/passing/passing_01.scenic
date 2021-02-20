@@ -62,7 +62,7 @@ ego = Car at egoSpawnPt,
 	with behavior EgoBehavior(EGO_SPEED)
 
 adversary = Car following roadDirection for Range(10, 25),
-	with behavior FollowLaneBehavior(ADV_SPEED)
+	with behavior FollowLaneBehavior(target_speed=ADV_SPEED)
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
