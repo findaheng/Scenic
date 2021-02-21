@@ -78,10 +78,10 @@ ego = Car at egoSpawnPt,
 adversary_1 = Car following roadDirection for ADV1_DIST,
 	with behavior FollowLaneBehavior(target_speed=ADV1_SPEED)
 
-adversary_2 = Car following roadDirection for (ADV1_DIST + ADV2_DIST)
+adversary_2 = Car following roadDirection for (ADV1_DIST + ADV2_DIST),
 	with behavior Adversary2Behavior(ADV2_SPEED)
 
-adversary_3 = Car following roadDirection for (ADV1_DIST + ADV2_DIST + ADV3_DIST)
+adversary_3 = Car following roadDirection for (ADV1_DIST + ADV2_DIST + ADV3_DIST),
 	with behavior FollowLaneBehavior(target_speed=ADV3_SPEED)
 
 require (distance to intersection) > INIT_DIST
