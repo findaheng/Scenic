@@ -24,6 +24,7 @@ EGO_BRAKE = 1.0
 
 LEAD_SPEED = 6
 
+ADV_DIST = VerifaiRange(10, 25)
 ADV_INIT_SPEED = 3
 ADV_END_SPEED = 10
 
@@ -80,7 +81,7 @@ leadSpawnPt = OrientedPoint in leadLaneSec.centerline
 ego = Car at egoSpawnPt,
 	with behavior EgoBehavior(EGO_SPEED)
 
-adversary = Car following roadDirection for Range(10, 25),
+adversary = Car following roadDirection for ADV_DIST,
 	with behavior AdversaryBehavior(ADV_INIT_SPEED, ADV_END_SPEED)
 
 lead = Car at leadSpawnPt,

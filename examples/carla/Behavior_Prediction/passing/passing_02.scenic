@@ -18,6 +18,8 @@ model scenic.simulators.carla.model
 #################################
 
 EGO_SPEED = 3
+
+ADV_DIST = VerifaiRange(-25, 10)
 ADV_SPEED = 10
 
 BYPASS_DIST = [15, 15]
@@ -61,7 +63,7 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 ego = Car at egoSpawnPt,
 	with behavior FollowLaneBehavior(target_speed=EGO_SPEED)
 
-adversary = Car following roadDirection for Range(-25, -10),
+adversary = Car following roadDirection for ADV_DIST,
 	with behavior AdversaryBehavior(ADV_SPEED)
 
 require (distance to intersection) > INIT_DIST

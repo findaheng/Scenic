@@ -1,9 +1,9 @@
 """
 TITLE: Behavior Prediction - Intersection 06
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Ego vehicle slows down for an adversary vehicle to perform 
-a lane change to pass a stationary vehicle waiting to make an 
-unprotected left turn.
+DESCRIPTION: Ego vehicle waits for an adversary vehicle in an adjacent 
+lane to pass before performing a lane change to pass a stationary 
+vehicle waiting to make an unprotected left turn.
 """
 
 #################################
