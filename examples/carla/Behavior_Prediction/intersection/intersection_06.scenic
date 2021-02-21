@@ -18,14 +18,14 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
-EGO_INIT_DIST = [15, 20]
+EGO_INIT_DIST = VerifaiRange(5, 10)
 EGO_SPEED = 10
+EGO_BRAKE = 1.0
 
 STAT_INIT_DIST = [0, 5]
 
-ADV_INIT_DIST = VerifaiRange(5, 10)
+ADV_INIT_DIST = [15, 20]
 ADV_SPEED = 10
-ADV_BRAKE = 1.0
 
 BYPASS_DIST = 10
 TERM_DIST = 70
@@ -34,14 +34,14 @@ TERM_DIST = 70
 # AGENT BEHAVIORS               #
 #################################
 
-behavior AdversaryBehavior(speed, trajectory):
-	take SetBrakeAction(ADV_BRAKE) \
-		until (distance from adversary to ego) > BYPASS_DIST
+behavior EgoBehavior(speed):
+	take SetBrakeAction(EGO_BRAKE) \
+		until (distance to adversary) > BYPASS_DIST
 	rightLaneSec = self.laneSection.laneToRight
 	do LaneChangeBehavior(
 			laneSectionToSwitch=rightLaneSec,
 			target_speed=speed)
-	do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
+	do FollowLaneBehavior(target_speed=speed)
 
 #################################
 # SPATIAL RELATIONS             #
@@ -54,23 +54,23 @@ statInitLane = Uniform(*filter(lambda lane:
 	intersection.incomingLanes))
 statSpawnPt = OrientedPoint in statInitLane.centerline
 
-egoInitLane = statInitLane.laneToRight
-egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoInitLane.maneuvers))
-egoTrajectory = [advInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
-egoSpawnPt = OrientedPoint in egoInitLane.centerline
+advInitLane = statInitLane.laneToRight.lane
+advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advInitLane.maneuvers))
+advTrajectory = [advInitLane, advManeuver.connectingLane, advManeuver.endLane]
+advSpawnPt = OrientedPoint in advInitLane.centerline
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car at egoSpawnPt,
-	with behavior FollowTrajectoryBehavior(target_speed=ADV_SPEED, trajectory=advTrajectory)
-
 stationary = Car at statSpawnPt
 
-adversary = Car behind stationary by EGO_INIT_DIST,
-	with behavior EgoBehavior(EGO_SPEED, advTrajectory)
+ego = Car behind stationary by EGO_INIT_DIST,
+	with behavior EgoBehavior(EGO_SPEED)
+
+adv = Car at advSpawnPt,
+	with behavior FollowTrajectoryBehavior(target_speed=ADV_SPEED, trajectory=advTrajectory)
 
 require STAT_INIT_DIST[0] <= (distance from stationary to intersection) <= STAT_INIT_DIST[1]
-require ADV_INIT_DIST[0] <= (distance from adversary to intersection) <= EGO_INIT_DIST[1]
-terminate when (distance to statSpawnPt) > TERM_DIST
+require ADV_INIT_DIST[0] <= (distance from adversary to intersection) <= ADV_INIT_DIST[1]
+terminate when (distance to statSpawnPt) > (TERM_DIST - EGO_INIT_DIST)
