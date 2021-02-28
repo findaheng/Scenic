@@ -19,7 +19,7 @@ model scenic.simulators.carla.model
 
 EGO_SPEED = VerifaiRange(2, 4)
 
-ADV_DIST = VerifaiRange(-25, 10)
+ADV_DIST = VerifaiRange(-25, -10)
 ADV_SPEED = VerifaiRange(7, 10)
 
 BYPASS_DIST = [15, 15]
