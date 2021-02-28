@@ -54,7 +54,7 @@ statInitLane = Uniform(*filter(lambda lane:
 	intersection.incomingLanes))
 statSpawnPt = OrientedPoint in statInitLane.centerline
 
-advInitLane = statInitLane.laneToRight.lane
+advInitLane = statInitLane.sectionAt(statSpawnPt).laneToRight.lane
 advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advInitLane.maneuvers))
 advTrajectory = [advInitLane, advManeuver.connectingLane, advManeuver.endLane]
 advSpawnPt = OrientedPoint in advInitLane.centerline
