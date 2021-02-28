@@ -34,12 +34,9 @@ TERM_DIST = 70
 # AGENT BEHAVIORS               #
 #################################
 
-behavior WaitBehavior(brake):
-	take SetBrakeAction(brake)
-
 behavior EgoBehavior(speed):
-	do WaitBehavior(EGO_BRAKE) \
-		until (distance to adversary) > BYPASS_DIST
+	while (distance to adversary) < BYPASS_DIST:
+		take SetBrakeAction(EGO_BRAKE)
 	rightLaneSec = self.laneSection.laneToRight
 	do LaneChangeBehavior(
 			laneSectionToSwitch=rightLaneSec,

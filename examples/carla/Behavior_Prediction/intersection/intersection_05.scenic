@@ -24,22 +24,19 @@ EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
 STAT_INIT_DIST = [0, 5]
 
-ADV_INIT_DIST = [25, 30]
+ADV_INIT_DIST = [15, 20]
 ADV_SPEED = VerifaiRange(7, 10)
 
-BYPASS_DIST = VerifaiRange(8, 12)
+BYPASS_DIST = 20
 TERM_DIST = 70
 
 #################################
 # AGENT BEHAVIORS               #
 #################################
 
-behavior WaitBehavior(brake):
-	take SetBrakeAction(brake)
-
 behavior EgoBehavior(speed, trajectory):
-	do WaitBehavior(EGO_BRAKE) \
-		until (distance to adversary) > BYPASS_DIST
+	while (distance to adversary) < BYPASS_DIST:
+		take SetBrakeAction(EGO_BRAKE)
 	rightLaneSec = self.laneSection.laneToRight
 	do LaneChangeBehavior(
 			laneSectionToSwitch=rightLaneSec,
