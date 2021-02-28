@@ -23,7 +23,7 @@ EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = VerifaiRange(0.7, 1.0)
 
 LEAD_DIST = 10
-LEAD_SPEED = VerifaiRange(5, 7)
+LEAD_SPEED = EGO_SPEED - VerifaiRange(1, 2)
 
 ADV_DIST = VerifaiRange(10, 15)
 ADV_INIT_SPEED = VerifaiRange(2, 4)
@@ -57,8 +57,8 @@ behavior EgoBehavior():
 					target_speed=EGO_SPEED)
 		interrupt when (distance to lead) < SAFE_DIST:
 			take SetBrakeAction(EGO_BRAKE)
-		do FollowLaneBehavior(target_speed=LEAD_SPEED) for TERM_TIME seconds
-		terminate 
+			do FollowLaneBehavior(target_speed=LEAD_SPEED) for TERM_TIME seconds
+			terminate 
 
 behavior AdversaryBehavior():
 	do FollowLaneBehavior(target_speed=ADV_INIT_SPEED) \
