@@ -17,19 +17,15 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
-EGO_SPEED = 10
-EGO_BRAKE = 1.0
+EGO_SPEED = VerifaiRange(7, 10)
+EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
-ADV1_DIST = VerifaiRange(10, 25)
-ADV1_SPEED = 3
+ADV1_DIST = VerifaiRange(20, 25)
+ADV2_DIST = VerifaiRange(20, 25)
+ADV3_DIST = VerifaiRange(20, 25)
+ADV_SPEED = VerifaiRange(2, 4)
 
-ADV2_DIST = VerifaiRange(10, 25)
-ADV2_SPEED = 3
-
-ADV3_DIST = VerifaiRange(10, 25)
-ADV3_SPEED = 3
-
-BYPASS_DIST = 15
+BYPASS_DIST = 10
 INIT_DIST = 50
 TERM_DIST = 75
 
@@ -76,13 +72,13 @@ ego = Car at egoSpawnPt,
 	with behavior EgoBehavior(EGO_SPEED, EGO_BRAKE)
 
 adversary_1 = Car following roadDirection for ADV1_DIST,
-	with behavior FollowLaneBehavior(target_speed=ADV1_SPEED)
+	with behavior FollowLaneBehavior(target_speed=ADV_SPEED)
 
 adversary_2 = Car following roadDirection for (ADV1_DIST + ADV2_DIST),
-	with behavior Adversary2Behavior(ADV2_SPEED)
+	with behavior Adversary2Behavior(ADV_SPEED)
 
 adversary_3 = Car following roadDirection for (ADV1_DIST + ADV2_DIST + ADV3_DIST),
-	with behavior FollowLaneBehavior(target_speed=ADV3_SPEED)
+	with behavior FollowLaneBehavior(target_speed=ADV_SPEED)
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary_1 to intersection) > INIT_DIST

@@ -19,14 +19,14 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
-EGO_SPEED = 10
-EGO_BRAKE = 1.0
+EGO_SPEED = VerifaiRange(7, 10)
+EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
-LEAD_SPEED = 6
+LEAD_SPEED = VerifaiRange(5, 7)
 
 ADV_DIST = VerifaiRange(10, 25)
-ADV_INIT_SPEED = 3
-ADV_END_SPEED = 10
+ADV_INIT_SPEED = VerifaiRange(2, 4)
+ADV_END_SPEED = VerifaiRange(7, 10)
 
 BYPASS_DIST = [15, 15]
 SAFE_DIST = 10

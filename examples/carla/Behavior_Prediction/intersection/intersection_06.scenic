@@ -19,15 +19,15 @@ model scenic.simulators.carla.model
 #################################
 
 EGO_INIT_DIST = VerifaiRange(5, 10)
-EGO_SPEED = 10
-EGO_BRAKE = 1.0
+EGO_SPEED = VerifaiRange(7, 10)
+EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
 STAT_INIT_DIST = [0, 5]
 
 ADV_INIT_DIST = [15, 20]
-ADV_SPEED = 10
+ADV_SPEED = VerifaiRange(7, 10)
 
-BYPASS_DIST = 10
+BYPASS_DIST = VerifaiRange(8, 12)
 TERM_DIST = 70
 
 #################################

@@ -17,10 +17,10 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
-EGO_SPEED = 10
+EGO_SPEED = VerifaiRange(7, 10)
 
 ADV_DIST = VerifaiRange(10, 25)
-ADV_SPEED = 3
+ADV_SPEED = VerifaiRange(2, 4)
 
 BYPASS_DIST = [15, 15]
 INIT_DIST = 50
