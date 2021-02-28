@@ -68,7 +68,7 @@ behavior AdversaryBehavior(init_speed, end_speed):
 # SPATIAL RELATIONS             #
 #################################
 
-initLaneSec = Uniform(*network.laneSections)
+initLaneSec = Uniform(*filter(lambda s: s._fasterLane is not None, network.laneSections))
 leadLaneSec = initLaneSec.fasterLane.successor
 
 egoSpawnPt = OrientedPoint in initLaneSec.centerline
