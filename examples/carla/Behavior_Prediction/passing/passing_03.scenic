@@ -90,4 +90,4 @@ lead = Car at leadSpawnPt,
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
 require (distance from lead to intersection) > INIT_DIST
-require always (adversary.laneSection._fasterLane is not None)
+require always (adversary.laneSection._laneToRight is not None)
