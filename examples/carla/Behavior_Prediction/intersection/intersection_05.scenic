@@ -35,7 +35,7 @@ TERM_DIST = 70
 #################################
 
 behavior EgoBehavior(speed, trajectory):
-	take SetBrakeAction(EGO_BRAKE) \
+	do SetBrakeAction(EGO_BRAKE) \
 		until (distance to adversary) > BYPASS_DIST
 	rightLaneSec = self.laneSection.laneToRight
 	do LaneChangeBehavior(
