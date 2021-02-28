@@ -30,23 +30,23 @@ TERM_TIME = 5
 # AGENT BEHAVIORS               #
 #################################
 
-behavior AdversaryBehavior(speed):
+behavior AdversaryBehavior():
 	try:
-		do FollowLaneBehavior(target_speed=speed)
+		do FollowLaneBehavior(target_speed=ADV_SPEED)
 	interrupt when withinDistanceToAnyObjs(self, BYPASS_DIST[0]):
 		fasterLaneSec = self.laneSection.fasterLane
 		do LaneChangeBehavior(
 				laneSectionToSwitch=fasterLaneSec,
-				target_speed=speed)
+				target_speed=ADV_SPEED)
 		do FollowLaneBehavior(
-				target_speed=speed,
+				target_speed=ADV_SPEED,
 				laneToFollow=fasterLaneSec.lane) \
 			until (distance to adversary) > BYPASS_DIST[1]
 		slowerLaneSec = self.laneSection.slowerLane
 		do LaneChangeBehavior(
 				laneSectionToSwitch=slowerLaneSec,
-				target_speed=speed)
-		do FollowLaneBehavior(target_speed=speed) for TERM_TIME seconds
+				target_speed=ADV_SPEED)
+		do FollowLaneBehavior(target_speed=ADV_SPEED) for TERM_TIME seconds
 		terminate 
 
 #################################
@@ -64,7 +64,7 @@ ego = Car at egoSpawnPt,
 	with behavior FollowLaneBehavior(target_speed=EGO_SPEED)
 
 adversary = Car following roadDirection for ADV_DIST,
-	with behavior AdversaryBehavior(ADV_SPEED)
+	with behavior AdversaryBehavior()
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST

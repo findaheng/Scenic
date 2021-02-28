@@ -32,9 +32,9 @@ TERM_DIST = 70
 # AGENT BEHAVIORS               #
 #################################
 
-behavior EgoBehavior(speed, trajectory):
+behavior EgoBehavior(trajectory):
 	try:
-		do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
+		do FollowTrajectoryBehavior(target_speed=EGO_SPEED, trajectory=trajectory)
 	interrupt when withinDistanceToAnyObjs(self, SAFETY_DIST):
 		take SetBrakeAction(EGO_BRAKE)
 
@@ -62,7 +62,7 @@ advSpawnPt = OrientedPoint in advInitLane.centerline
 #################################
 
 ego = Car at egoSpawnPt,
-	with behavior EgoBehavior(EGO_SPEED, egoTrajectory)
+	with behavior EgoBehavior(egoTrajectory)
 
 adversary = Car at advSpawnPt,
 	with behavior FollowTrajectoryBehavior(target_speed=ADV_SPEED, trajectory=advTrajectory)

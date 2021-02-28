@@ -34,14 +34,14 @@ TERM_DIST = 70
 # AGENT BEHAVIORS               #
 #################################
 
-behavior EgoBehavior(speed):
+behavior EgoBehavior():
 	while (distance to adversary) < BYPASS_DIST:
 		take SetBrakeAction(EGO_BRAKE)
 	rightLaneSec = self.laneSection.laneToRight
 	do LaneChangeBehavior(
 			laneSectionToSwitch=rightLaneSec,
-			target_speed=speed)
-	do FollowLaneBehavior(target_speed=speed)
+			target_speed=EGO_SPEED)
+	do FollowLaneBehavior(target_speed=EGO_SPEED)
 
 #################################
 # SPATIAL RELATIONS             #
@@ -66,7 +66,7 @@ advSpawnPt = OrientedPoint in advInitLane.centerline
 stationary = Car at statSpawnPt
 
 ego = Car behind stationary by EGO_INIT_DIST,
-	with behavior EgoBehavior(EGO_SPEED)
+	with behavior EgoBehavior()
 
 adversary = Car at advSpawnPt,
 	with behavior FollowTrajectoryBehavior(target_speed=ADV_SPEED, trajectory=advTrajectory)

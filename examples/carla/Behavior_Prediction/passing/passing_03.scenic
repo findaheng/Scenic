@@ -20,12 +20,12 @@ model scenic.simulators.carla.model
 #################################
 
 EGO_SPEED = VerifaiRange(7, 10)
-EGO_BRAKE = VerifaiRange(0.5, 1.0)
+EGO_BRAKE = VerifaiRange(0.7, 1.0)
 
-LEAD_DIST = VerifaiRange(5, 10)
+LEAD_DIST = 10
 LEAD_SPEED = VerifaiRange(5, 7)
 
-ADV_DIST = VerifaiRange(10, 25)
+ADV_DIST = VerifaiRange(10, 15)
 ADV_INIT_SPEED = VerifaiRange(2, 4)
 ADV_END_SPEED = VerifaiRange(7, 10)
 
@@ -38,39 +38,39 @@ TERM_TIME = 5
 # AGENT BEHAVIORS               #
 #################################
 
-behavior EgoBehavior(speed):
+behavior EgoBehavior():
 	try:
-		do FollowLaneBehavior(target_speed=speed)
+		do FollowLaneBehavior(target_speed=EGO_SPEED)
 	interrupt when (distance to adversary) < BYPASS_DIST[0]:
 		fasterLaneSec = self.laneSection.fasterLane
 		do LaneChangeBehavior(
 				laneSectionToSwitch=fasterLaneSec,
-				target_speed=speed)
+				target_speed=EGO_SPEED)
 		try:
 			do FollowLaneBehavior(
-					target_speed=speed,
+					target_speed=EGO_SPEED,
 					laneToFollow=fasterLaneSec.lane) \
 				until (distance to adversary) > BYPASS_DIST[1]
+			slowerLaneSec = self.laneSection.slowerLane
+			do LaneChangeBehavior(
+					laneSectionToSwitch=slowerLaneSec,
+					target_speed=EGO_SPEED)
 		interrupt when (distance to lead) < SAFE_DIST:
 			take SetBrakeAction(EGO_BRAKE)
-		slowerLaneSec = self.laneSection.slowerLane
-		do LaneChangeBehavior(
-				laneSectionToSwitch=slowerLaneSec,
-				target_speed=speed)
-		do FollowLaneBehavior(target_speed=speed) for TERM_TIME seconds
+		do FollowLaneBehavior(target_speed=LEAD_SPEED) for TERM_TIME seconds
 		terminate 
 
-behavior AdversaryBehavior(init_speed, end_speed):
-	do FollowLaneBehavior(target_speed=init_speed) \
+behavior AdversaryBehavior():
+	do FollowLaneBehavior(target_speed=ADV_INIT_SPEED) \
 		until self.lane is not ego.lane
-	do FollowLaneBehavior(target_speed=end_speed)
+	do FollowLaneBehavior(target_speed=ADV_END_SPEED)
 
-behavior LeadBehavior(speed):
+behavior LeadBehavior():
 	fasterLaneSec = self.laneSection.fasterLane
 	do LaneChangeBehavior(
 			laneSectionToSwitch=fasterLaneSec,
-			target_speed=speed)
-	do FollowLaneBehavior(target_speed=speed)
+			target_speed=LEAD_SPEED)
+	do FollowLaneBehavior(target_speed=LEAD_SPEED)
 
 #################################
 # SPATIAL RELATIONS             #
@@ -84,13 +84,13 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 #################################
 
 ego = Car at egoSpawnPt,
-	with behavior EgoBehavior(EGO_SPEED)
+	with behavior EgoBehavior()
 
 adversary = Car following roadDirection for ADV_DIST,
-	with behavior AdversaryBehavior(ADV_INIT_SPEED, ADV_END_SPEED)
+	with behavior AdversaryBehavior()
 
 lead = Car following roadDirection for (ADV_DIST + LEAD_DIST),
-	with behavior LeadBehavior(LEAD_SPEED)
+	with behavior LeadBehavior()
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
