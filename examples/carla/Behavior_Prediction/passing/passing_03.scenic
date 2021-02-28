@@ -22,6 +22,7 @@ model scenic.simulators.carla.model
 EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
+LEAD_DIST = VerifaiRange(5, 10)
 LEAD_SPEED = VerifaiRange(5, 7)
 
 ADV_DIST = VerifaiRange(10, 25)
@@ -64,15 +65,19 @@ behavior AdversaryBehavior(init_speed, end_speed):
 		until self.lane is not ego.lane
 	do FollowLaneBehavior(target_speed=end_speed)
 
+behavior LeadBehavior(speed):
+	fasterLaneSec = self.laneSection.fasterLane
+	do LaneChangeBehavior(
+			laneSectionToSwitch=fasterLaneSec,
+			target_speed=speed)
+	do FollowLaneBehavior(target_speed=speed)
+
 #################################
 # SPATIAL RELATIONS             #
 #################################
 
-initLaneSec = Uniform(*filter(lambda s: s._laneToRight is not None, network.laneSections))
-leadLaneSec = initLaneSec.laneToRight.successor
-
-egoSpawnPt = OrientedPoint in initLaneSec.centerline
-leadSpawnPt = OrientedPoint in leadLaneSec.centerline
+initLane = Uniform(*network.lanes)
+egoSpawnPt = OrientedPoint in initLane.centerline
 
 #################################
 # SCENARIO SPECIFICATION        #
@@ -84,10 +89,10 @@ ego = Car at egoSpawnPt,
 adversary = Car following roadDirection for ADV_DIST,
 	with behavior AdversaryBehavior(ADV_INIT_SPEED, ADV_END_SPEED)
 
-lead = Car at leadSpawnPt,
-	with behavior FollowLaneBehavior(target_speed=LEAD_SPEED)
+lead = Car following roadDirection for (ADV_DIST + LEAD_DIST),
+	with behavior LeadBehavior(LEAD_SPEED)
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
 require (distance from lead to intersection) > INIT_DIST
-require always (adversary.laneSection._laneToRight is not None)
+require always (adversary.laneSection._fasterLane is not None)
