@@ -174,19 +174,16 @@ class Maneuver(_ElementReferencer):
 
     @property
     @utils.cached
-    def disjointManeuvers(self) -> Tuple[Maneuver]:
-        """Tuple[Maneuver]: Maneuvers from different roads whose connecting lanes do not intersect this one's."""
-        if not self.connectingLane:
-            return ()
-        guideway = self.connectingLane
-        start = self.startLane
-        conflicts = []
-        for maneuver in self.intersection.maneuvers:
-            if (maneuver.startLane is not start
-                and maneuver.startLane.road is not start.road
-                and not maneuver.connectingLane.centerline.intersects(guideway.centerline)):
-                conflicts.append(maneuver)
-        return tuple(conflicts)
+    def reverseManeuvers(self) -> Tuple[Maneuver]:
+    	"""Tuple[Maneuver]: Maneuvers whose start and end roads are the reverse of this one's."""
+    	start = self.startLane.road
+    	end = self.endLane.road
+    	reverses = []
+    	for maneuver in self.intersection.maneuvers:
+    		if (maneuver.startLane.road is end
+    			and maneuver.endLane.road is start):
+    			reverses.append(maneuver)
+    	return tuple(reverses)
 
 ## Road networks
 
