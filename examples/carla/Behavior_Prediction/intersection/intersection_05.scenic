@@ -27,7 +27,7 @@ STAT_INIT_DIST = [0, 5]
 ADV_INIT_DIST = [15, 20]
 ADV_SPEED = VerifaiRange(7, 10)
 
-BYPASS_DIST = 20
+BYPASS_DIST = 10
 TERM_DIST = 70
 
 #################################
