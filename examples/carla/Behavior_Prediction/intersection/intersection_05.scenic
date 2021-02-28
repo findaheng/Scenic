@@ -41,7 +41,7 @@ behavior EgoBehavior(speed):
 	do LaneChangeBehavior(
 			laneSectionToSwitch=rightLaneSec,
 			target_speed=speed)
-	do FolowLaneBehavior(target_speed=speed)
+	do FollowLaneBehavior(target_speed=speed)
 
 #################################
 # SPATIAL RELATIONS             #
