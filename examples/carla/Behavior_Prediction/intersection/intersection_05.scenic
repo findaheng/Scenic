@@ -25,7 +25,7 @@ EGO_BRAKE = VerifaiRange(0.5, 1.0)
 STAT_INIT_DIST = [0, 5]
 
 ADV_INIT_DIST = [15, 20]
-ADV_SPEED = VerifaiRange(7, 10)
+ADV_SPEED = 10
 
 BYPASS_DIST = 10
 TERM_DIST = 70
@@ -41,7 +41,7 @@ behavior EgoBehavior(speed, trajectory):
 	do LaneChangeBehavior(
 			laneSectionToSwitch=rightLaneSec,
 			target_speed=speed)
-	do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
+	do FolowLaneBehavior(target_speed=speed)
 
 #################################
 # SPATIAL RELATIONS             #
@@ -66,7 +66,7 @@ advSpawnPt = OrientedPoint in advInitLane.centerline
 stationary = Car at statSpawnPt
 
 ego = Car behind stationary by EGO_INIT_DIST,
-	with behavior EgoBehavior(EGO_SPEED, advTrajectory)
+	with behavior EgoBehavior(EGO_SPEED)
 
 adversary = Car at advSpawnPt,
 	with behavior FollowTrajectoryBehavior(target_speed=ADV_SPEED, trajectory=advTrajectory)

@@ -6,7 +6,6 @@
 03. Ego vehicle either goes straight or makes an unprotected left turn at signalized intersection and must suddenly stop to avoid collision when adversary vehicle from perpendicular lane continues straight shortly after light turns red.
 04. Ego vehicle either goes straight or makes an unprotected left turn at signalized intersection and must suddenly stop to avoid collision when adversary vehicle from perpendicular lane makes a left turn shortly after light turns red.
 05. Ego vehicle waits for an adversary vehicle to pass before performing a lane change to bypass a stationary vehicle waiting to make an unprotected left turn.
-06. Ego vehicle waits for an adversary vehicle in an adjacent lane to pass before performing a lane change to pass a stationary vehicle waiting to make an unprotected left turn.
 
 ## Passing
 01. Ego vehicle performs a lane change to bypass a slow adversary vehicle before returning to its original lane.
