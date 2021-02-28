@@ -22,7 +22,7 @@ EGO_SPEED = VerifaiRange(7, 10)
 ADV_DIST = VerifaiRange(10, 25)
 ADV_SPEED = VerifaiRange(2, 4)
 
-BYPASS_DIST = [15, 15]
+BYPASS_DIST = [15, 10]
 INIT_DIST = 50
 TERM_TIME = 5
 

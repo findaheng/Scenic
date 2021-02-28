@@ -28,7 +28,7 @@ ADV_DIST = VerifaiRange(10, 25)
 ADV_INIT_SPEED = VerifaiRange(2, 4)
 ADV_END_SPEED = VerifaiRange(7, 10)
 
-BYPASS_DIST = [15, 15]
+BYPASS_DIST = [15, 10]
 SAFE_DIST = 10
 INIT_DIST = 50
 TERM_TIME = 5
