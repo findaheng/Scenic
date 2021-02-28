@@ -50,7 +50,7 @@ behavior EgoBehavior(speed, trajectory):
 intersection = Uniform(*filter(lambda i: i.is4Way and i.isSignalized, network.intersections))
 
 statInitLane = Uniform(*filter(lambda lane: 
-	all([sec._laneToLeft is None and sec._laneToRight is not None for sec in lane.sections]),
+	all([sec._laneToRight is not None for sec in lane.sections]),
 	intersection.incomingLanes))
 statSpawnPt = OrientedPoint in statInitLane.centerline
 
