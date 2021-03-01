@@ -63,19 +63,22 @@ initLane = Uniform(*filter(lambda lane:
 	all([sec._laneToRight is not None for sec in lane.sections]),
 	network.lanes))
 egoSpawnPt = OrientedPoint in initLane.centerline
+egoLaneSecToSwitch = initLane.sectionAt(egoSpawnPt).laneToRight
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
+adversary_1, adversary_2, adversary_3 = Car, Car, Car
+
 ego = Car at egoSpawnPt,
-	with behavior EgoBehavior([adversary_1, adversary_2, adversary_3], self.laneSection.laneToRight)
+	with behavior EgoBehavior([adversary_1, adversary_2, adversary_3], egoLaneSecToSwitch)
 
 adversary_1 = Car following roadDirection for ADV1_DIST,
 	with behavior FollowLaneBehavior(target_speed=ADV_SPEED)
 
 adversary_2 = Car following roadDirection for (ADV1_DIST + ADV2_DIST),
-	with behavior Adversary2Behavior(ADV_SPEED)
+	with behavior Adversary2Behavior()
 
 adversary_3 = Car following roadDirection for (ADV1_DIST + ADV2_DIST + ADV3_DIST),
 	with behavior FollowLaneBehavior(target_speed=ADV_SPEED)
