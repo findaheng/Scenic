@@ -2,7 +2,7 @@
 TITLE: Behavior Prediction - Passing 04
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Ego vehicle performs multiple lane changes to bypass 
-three slow adversary vehicles.
+two slow adversary vehicles.
 """
 
 #################################
@@ -22,31 +22,34 @@ EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
 ADV1_DIST = VerifaiRange(20, 25)
 ADV2_DIST = VerifaiRange(20, 25)
-ADV3_DIST = VerifaiRange(20, 25)
 ADV_SPEED = VerifaiRange(2, 4)
 
 BYPASS_DIST = 10
 INIT_DIST = 50
 TERM_DIST = 75
+TERM_TIME = 10
 
 #################################
 # AGENT BEHAVIORS               #
 #################################
 
-behavior EgoBehavior(adversaries, laneSectionToSwitch):
+behavior EgoBehavior():
 	try:
 		do FollowLaneBehavior(target_speed=EGO_SPEED)
-	interrupt when (len(adversaries) > 0 and
-				   (distance to adversaries[0]) < BYPASS_DIST):
+	interrupt when (distance to adversary_1) < BYPASS_DIST:
+		newLaneSec = self.laneSection.laneToRight
 		do LaneChangeBehavior(
-			laneSectionToSwitch=laneSectionToSwitch,
+			laneSectionToSwitch=newLaneSec,
 			target_speed=EGO_SPEED)
-		do EgoBehavior(
-			speed=EGO_SPEED,
-			adversaries=adversaries[1:],
-			laneSectionToSwitch=(self.laneSection.laneToRight
-								 if len(adversaries) % 2 == 0
-								 else self.laneSection.laneToLeft))
+		try:
+			do FollowLaneBehavior(target_speed=EGO_SPEED)
+		interrupt when (distance to adversary_2) < BYPASS_DIST:
+			newLaneSec = self.laneSection.laneToLeft
+			do LaneChangeBehavior(
+				laneSectionToSwitch=newLaneSec,
+				target_speed=EGO_SPEED)
+			do FollowLaneBehavior(target_speed=EGO_SPEED) for TERM_TIME seconds
+			terminate
 
 behavior Adversary2Behavior():
 	rightLaneSec = self.laneSection.laneToRight
@@ -80,11 +83,6 @@ adversary_1 = Car following roadDirection for ADV1_DIST,
 adversary_2 = Car following roadDirection for (ADV1_DIST + ADV2_DIST),
 	with behavior Adversary2Behavior()
 
-adversary_3 = Car following roadDirection for (ADV1_DIST + ADV2_DIST + ADV3_DIST),
-	with behavior FollowLaneBehavior(target_speed=ADV_SPEED)
-
 require (distance to intersection) > INIT_DIST
 require (distance from adversary_1 to intersection) > INIT_DIST
 require (distance from adversary_2 to intersection) > INIT_DIST
-require (distance from adversary_3 to intersection) > INIT_DIST
-terminate when (distance to adversary_3) > TERM_DIST
