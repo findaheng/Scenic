@@ -41,22 +41,18 @@ behavior EgoBehavior():
 		do LaneChangeBehavior(
 			laneSectionToSwitch=newLaneSec,
 			target_speed=EGO_SPEED)
-		try:
-			do FollowLaneBehavior(target_speed=EGO_SPEED)
-		interrupt when (distance to adversary_2) < BYPASS_DIST:
-			newLaneSec = self.laneSection.laneToLeft
-			do LaneChangeBehavior(
-				laneSectionToSwitch=newLaneSec,
-				target_speed=EGO_SPEED)
-			try:
-				do FollowLaneBehavior(target_speed=EGO_SPEED)
-			interrupt when (distance to adversary_3) < BYPASS_DIST:
-				newLaneSec = self.laneSection.laneToRight
-				do LaneChangeBehavior(
-					laneSectionToSwitch=newLaneSec,
-					target_speed=EGO_SPEED)			
-				do FollowLaneBehavior(target_speed=EGO_SPEED) for TERM_TIME seconds
-				terminate
+	interrupt when (distance to adversary_2) < BYPASS_DIST:
+		newLaneSec = self.laneSection.laneToLeft
+		do LaneChangeBehavior(
+			laneSectionToSwitch=newLaneSec,
+			target_speed=EGO_SPEED)
+	interrupt when (distance to adversary_3) < BYPASS_DIST:
+		newLaneSec = self.laneSection.laneToRight
+		do LaneChangeBehavior(
+			laneSectionToSwitch=newLaneSec,
+			target_speed=EGO_SPEED)			
+		do FollowLaneBehavior(target_speed=EGO_SPEED) for TERM_TIME seconds
+		terminate
 
 behavior Adversary2Behavior():
 	rightLaneSec = self.laneSection.laneToRight
