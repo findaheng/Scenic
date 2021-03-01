@@ -75,7 +75,7 @@ egoLaneSecToSwitch = initLane.sectionAt(egoSpawnPt).laneToRight
 adversary_1, adversary_2, adversary_3 = Car, Car, Car
 
 ego = Car at egoSpawnPt,
-	with behavior EgoBehavior([adversary_1, adversary_2, adversary_3], egoLaneSecToSwitch)
+	with behavior EgoBehavior()
 
 adversary_1 = Car following roadDirection for ADV1_DIST,
 	with behavior FollowLaneBehavior(target_speed=ADV_SPEED)
