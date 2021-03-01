@@ -17,12 +17,12 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
-EGO_SPEED = VerifaiRange(6, 8)
+EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
 ADV1_DIST = VerifaiRange(20, 25)
-ADV2_DIST = ADV1_DIST + VerifaiRange(20, 25)
-ADV3_DIST = ADV2_DIST + VerifaiRange(20, 25)
+ADV2_DIST = ADV1_DIST + VerifaiRange(15, 20)
+ADV3_DIST = ADV2_DIST + VerifaiRange(15, 20)
 ADV_SPEED = VerifaiRange(2, 4)
 
 BYPASS_DIST = 15
@@ -36,16 +36,6 @@ TERM_TIME = 10
 behavior EgoBehavior():
 	try:
 		do FollowLaneBehavior(target_speed=EGO_SPEED)
-	interrupt when (distance to adversary_1) < BYPASS_DIST:
-		newLaneSec = self.laneSection.laneToRight
-		do LaneChangeBehavior(
-			laneSectionToSwitch=newLaneSec,
-			target_speed=EGO_SPEED)
-	interrupt when (distance to adversary_2) < BYPASS_DIST:
-		newLaneSec = self.laneSection.laneToLeft
-		do LaneChangeBehavior(
-			laneSectionToSwitch=newLaneSec,
-			target_speed=EGO_SPEED)
 	interrupt when (distance to adversary_3) < BYPASS_DIST:
 		newLaneSec = self.laneSection.laneToRight
 		do LaneChangeBehavior(
@@ -53,12 +43,22 @@ behavior EgoBehavior():
 			target_speed=EGO_SPEED)			
 		do FollowLaneBehavior(target_speed=EGO_SPEED) for TERM_TIME seconds
 		terminate
+	interrupt when (distance to adversary_2) < BYPASS_DIST:
+		newLaneSec = self.laneSection.laneToLeft
+		do LaneChangeBehavior(
+			laneSectionToSwitch=newLaneSec,
+			target_speed=EGO_SPEED)
+	interrupt when (distance to adversary_1) < BYPASS_DIST:
+		newLaneSec = self.laneSection.laneToRight
+		do LaneChangeBehavior(
+			laneSectionToSwitch=newLaneSec,
+			target_speed=EGO_SPEED)
 
 behavior Adversary2Behavior():
 	rightLaneSec = self.laneSection.laneToRight
 	do LaneChangeBehavior(
-			laneSectionToSwitch=rightLaneSec,
-			target_speed=ADV_SPEED)
+		laneSectionToSwitch=rightLaneSec,
+		target_speed=ADV_SPEED)
 	do FollowLaneBehavior(target_speed=ADV_SPEED)
 
 #################################
