@@ -17,7 +17,7 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
-EGO_SPEED = VerifaiRange(7, 10)
+EGO_SPEED = VerifaiRange(6, 8)
 EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
 ADV1_DIST = VerifaiRange(20, 25)
