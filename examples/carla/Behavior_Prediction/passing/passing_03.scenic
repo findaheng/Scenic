@@ -27,13 +27,14 @@ LEAD_SPEED = EGO_SPEED - VerifaiRange(1, 3)
 
 ADV_DIST = VerifaiRange(10, 15)
 ADV_INIT_SPEED = VerifaiRange(2, 4)
-ADV_END_SPEED = VerifaiRange(6, 8)
+ADV_END_SPEED = 2 * ADV_INIT_SPEED
+ADV_BUFFER_TIME = 5
 
 BYPASS_DIST = [15, 10]
 SAFE_DIST = 10
 INIT_DIST = 50
 TERM_DIST = 70
-TERM_TIME = 5
+TERM_TIME = 10
 
 #################################
 # AGENT BEHAVIORS               #
@@ -60,6 +61,8 @@ behavior EgoBehavior():
 behavior AdversaryBehavior():
 	do FollowLaneBehavior(target_speed=ADV_INIT_SPEED) \
 		until self.lane is not ego.lane
+	for _ in range(ADV_BUFFER_TIME):
+		do FollowLaneBehavior(target_speed=ADV_INIT_SPEED)
 	do FollowLaneBehavior(target_speed=ADV_END_SPEED)
 
 behavior LeadBehavior():
