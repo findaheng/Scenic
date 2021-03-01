@@ -27,7 +27,7 @@ ADV_SPEED = VerifaiRange(2, 4)
 
 BYPASS_DIST = 15
 INIT_DIST = 50
-TERM_TIME = 10
+TERM_DIST = ADV3_DIST + 15
 
 #################################
 # AGENT BEHAVIORS               #
@@ -36,22 +36,16 @@ TERM_TIME = 10
 behavior EgoBehavior():
 	try:
 		do FollowLaneBehavior(target_speed=EGO_SPEED)
-	interrupt when (distance to adversary_3) < BYPASS_DIST:
+	interrupt when ((distance to adversary_1) < BYPASS_DIST
+				 or (distance to adversary_3) < BYPASS_DIST):
 		newLaneSec = self.laneSection.laneToRight
 		do LaneChangeBehavior(
 			laneSectionToSwitch=newLaneSec,
-			target_speed=EGO_SPEED)			
-		do FollowLaneBehavior(target_speed=EGO_SPEED) for TERM_TIME seconds
-		terminate
 	interrupt when (distance to adversary_2) < BYPASS_DIST:
 		newLaneSec = self.laneSection.laneToLeft
 		do LaneChangeBehavior(
 			laneSectionToSwitch=newLaneSec,
 			target_speed=EGO_SPEED)
-	interrupt when (distance to adversary_1) < BYPASS_DIST:
-		newLaneSec = self.laneSection.laneToRight
-		do LaneChangeBehavior(
-			laneSectionToSwitch=newLaneSec,
 			target_speed=EGO_SPEED)
 
 behavior Adversary2Behavior():
@@ -93,3 +87,4 @@ require (distance to intersection) > INIT_DIST
 require (distance from adversary_1 to intersection) > INIT_DIST
 require (distance from adversary_2 to intersection) > INIT_DIST
 require (distance from adversary_3 to intersection) > INIT_DIST
+terminate when (distance to adversary_3) > TERM_DIST
