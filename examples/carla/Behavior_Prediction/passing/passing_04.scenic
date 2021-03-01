@@ -33,27 +33,27 @@ TERM_DIST = 75
 # AGENT BEHAVIORS               #
 #################################
 
-behavior EgoBehavior(speed, adversaries, laneSectionToSwitch):
+behavior EgoBehavior(adversaries, laneSectionToSwitch):
 	try:
-		do FollowLaneBehavior(target_speed=speed)
+		do FollowLaneBehavior(target_speed=EGO_SPEED)
 	interrupt when (len(adversaries) > 0 and
 				   (distance to adversaries[0]) < BYPASS_DIST):
 		do LaneChangeBehavior(
 			laneSectionToSwitch=laneSectionToSwitch,
-			target_speed=speed)
+			target_speed=EGO_SPEED)
 		do EgoBehavior(
-			speed=speed,
+			speed=EGO_SPEED,
 			adversaries=adversaries[1:],
 			laneSectionToSwitch=(self.laneSection.laneToRight
 								 if len(adversaries) % 2 == 0
 								 else self.laneSection.laneToLeft))
 
-behavior Adversary2Behavior(speed):
+behavior Adversary2Behavior():
 	rightLaneSec = self.laneSection.laneToRight
 	do LaneChangeBehavior(
 			laneSectionToSwitch=rightLaneSec,
-			target_speed=speed)
-	do FollowLaneBehavior(target_speed=speed)
+			target_speed=ADV_SPEED)
+	do FollowLaneBehavior(target_speed=ADV_SPEED)
 
 #################################
 # SPATIAL RELATIONS             #
@@ -69,7 +69,7 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 #################################
 
 ego = Car at egoSpawnPt,
-	with behavior EgoBehavior(EGO_SPEED, EGO_BRAKE)
+	with behavior EgoBehavior([adversary_1, adversary_2, adversary_3], self.laneSection.laneToRight)
 
 adversary_1 = Car following roadDirection for ADV1_DIST,
 	with behavior FollowLaneBehavior(target_speed=ADV_SPEED)
@@ -84,5 +84,4 @@ require (distance to intersection) > INIT_DIST
 require (distance from adversary_1 to intersection) > INIT_DIST
 require (distance from adversary_2 to intersection) > INIT_DIST
 require (distance from adversary_3 to intersection) > INIT_DIST
-require always (adversary.laneSection._laneToRight is not None)
 terminate when (distance to adversary_3) > TERM_DIST
