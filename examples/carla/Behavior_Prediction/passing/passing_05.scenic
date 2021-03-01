@@ -41,11 +41,11 @@ behavior EgoBehavior():
 		newLaneSec = self.laneSection.laneToRight
 		do LaneChangeBehavior(
 			laneSectionToSwitch=newLaneSec,
+			target_speed=EGO_SPEED)
 	interrupt when (distance to adversary_2) < BYPASS_DIST:
 		newLaneSec = self.laneSection.laneToLeft
 		do LaneChangeBehavior(
 			laneSectionToSwitch=newLaneSec,
-			target_speed=EGO_SPEED)
 			target_speed=EGO_SPEED)
 
 behavior Adversary2Behavior():
