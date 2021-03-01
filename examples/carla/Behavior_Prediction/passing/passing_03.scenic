@@ -22,13 +22,13 @@ model scenic.simulators.carla.model
 EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = VerifaiRange(0.7, 1.0)
 
-LEAD_DIST = 10
-LEAD_SPEED = EGO_SPEED - 4
-
 ADV_DIST = VerifaiRange(10, 15)
 ADV_INIT_SPEED = VerifaiRange(2, 4)
 ADV_END_SPEED = 2 * VerifaiRange(7, 10)
 ADV_BUFFER_TIME = 5
+
+LEAD_DIST = ADV_DIST + 10
+LEAD_SPEED = EGO_SPEED - 4
 
 BYPASS_DIST = [15, 10]
 SAFE_DIST = 10
@@ -92,7 +92,7 @@ ego = Car at egoSpawnPt,
 adversary = Car following roadDirection for ADV_DIST,
 	with behavior AdversaryBehavior()
 
-lead = Car following roadDirection for (ADV_DIST + LEAD_DIST),
+lead = Car following roadDirection for LEAD_DIST,
 	with behavior LeadBehavior()
 
 require (distance to intersection) > INIT_DIST
