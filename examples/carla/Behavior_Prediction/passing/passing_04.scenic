@@ -50,7 +50,7 @@ behavior EgoBehavior():
 
 behavior Adversary2Behavior():
 	rightLaneSec = self.laneSection.laneToRight
-	do LanehangeBehavior(
+	do LaneChangeBehavior(
 		laneSectionToSwitch=rightLaneSec,
 		target_speed=ADV_SPEED)
 	do FollowLaneBehavior(target_speed=ADV_SPEED)
