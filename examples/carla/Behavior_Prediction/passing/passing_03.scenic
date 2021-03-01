@@ -23,15 +23,16 @@ EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = VerifaiRange(0.7, 1.0)
 
 LEAD_DIST = 10
-LEAD_SPEED = EGO_SPEED - VerifaiRange(1, 2)
+LEAD_SPEED = EGO_SPEED - VerifaiRange(1, 3)
 
 ADV_DIST = VerifaiRange(10, 15)
 ADV_INIT_SPEED = VerifaiRange(2, 4)
-ADV_END_SPEED = VerifaiRange(7, 10)
+ADV_END_SPEED = VerifaiRange(6, 8)
 
 BYPASS_DIST = [15, 10]
 SAFE_DIST = 10
 INIT_DIST = 50
+TERM_DIST = 70
 TERM_TIME = 5
 
 #################################
@@ -51,10 +52,6 @@ behavior EgoBehavior():
 					target_speed=EGO_SPEED,
 					laneToFollow=fasterLaneSec.lane) \
 				until (distance to adversary) > BYPASS_DIST[1]
-			slowerLaneSec = self.laneSection.slowerLane
-			do LaneChangeBehavior(
-					laneSectionToSwitch=slowerLaneSec,
-					target_speed=EGO_SPEED)
 		interrupt when (distance to lead) < SAFE_DIST:
 			take SetBrakeAction(EGO_BRAKE)
 			do FollowLaneBehavior(target_speed=LEAD_SPEED) for TERM_TIME seconds
@@ -96,3 +93,4 @@ require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
 require (distance from lead to intersection) > INIT_DIST
 require always (adversary.laneSection._fasterLane is not None)
+terminate when (distance to egoSpawnPt) > TERM_DIST
