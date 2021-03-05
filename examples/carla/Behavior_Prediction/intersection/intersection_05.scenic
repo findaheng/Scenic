@@ -30,7 +30,7 @@ ADV_INIT_DIST = [15, 20]
 ADV_SPEED = 10
 
 BYPASS_DIST = 8
-CRASH_DIST = 5
+CRASH_DIST = 2
 TERM_DIST = 70
 
 #################################
@@ -70,7 +70,7 @@ advSpawnPt = OrientedPoint in advInitLane.centerline
 #################################
 
 stationary = Car at statSpawnPt,
-	with blueprint MODEL,
+	with blueprint MODEL
 
 ego = Car behind stationary by EGO_INIT_DIST,
 	with blueprint MODEL,
