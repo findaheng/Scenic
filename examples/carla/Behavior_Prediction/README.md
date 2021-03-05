@@ -11,7 +11,7 @@
 08. Ego vehicle goes straight at 3-way intersection and must suddenly stop to avoid collision when adversary vehicle makes a left turn. (TIP)
 09. Ego vehicle waits at 3-way intersection for adversary vehicle from perpendicular lane to pass before making a right turn. (TIP)
 
-## Passing
+## Bypassing
 01. Ego vehicle performs a lane change to bypass a slow adversary vehicle before returning to its original lane.
 02. Advesary vehicle performs a lange change to bypass the ego vehicle before returning to its original lane.
 03. Ego vehicle performs a lane change to bypass a slow adversary vehicle but cannot return to its original lane because the adversary accelerates. Ego vehicle must then slow down to avoid collision with leading vehicle in new lane.
