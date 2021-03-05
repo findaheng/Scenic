@@ -19,10 +19,10 @@ model scenic.simulators.carla.model
 
 MODEL = 'vehicle.lincoln.mkz2017'
 
-EGO_SPEED = VerifaiRange(2, 4)
+param EGO_SPEED = VerifaiRange(2, 4)
 
-ADV_DIST = VerifaiRange(-25, -10)
-ADV_SPEED = VerifaiRange(7, 10)
+param ADV_DIST = VerifaiRange(-25, -10)
+param ADV_SPEED = VerifaiRange(7, 10)
 
 BYPASS_DIST = [15, 10]
 INIT_DIST = 50
@@ -34,21 +34,21 @@ TERM_TIME = 5
 
 behavior AdversaryBehavior():
 	try:
-		do FollowLaneBehavior(target_speed=ADV_SPEED)
+		do FollowLaneBehavior(target_speed=globalParameters.ADV_SPEED)
 	interrupt when withinDistanceToAnyObjs(self, BYPASS_DIST[0]):
 		fasterLaneSec = self.laneSection.fasterLane
 		do LaneChangeBehavior(
 				laneSectionToSwitch=fasterLaneSec,
-				target_speed=ADV_SPEED)
+				target_speed=globalParameters.ADV_SPEED)
 		do FollowLaneBehavior(
-				target_speed=ADV_SPEED,
+				target_speed=globalParameters.ADV_SPEED,
 				laneToFollow=fasterLaneSec.lane) \
 			until (distance to adversary) > BYPASS_DIST[1]
 		slowerLaneSec = self.laneSection.slowerLane
 		do LaneChangeBehavior(
 				laneSectionToSwitch=slowerLaneSec,
-				target_speed=ADV_SPEED)
-		do FollowLaneBehavior(target_speed=ADV_SPEED) for TERM_TIME seconds
+				target_speed=globalParameters.ADV_SPEED)
+		do FollowLaneBehavior(target_speed=globalParameters.ADV_SPEED) for TERM_TIME seconds
 		terminate 
 
 #################################
@@ -64,9 +64,9 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 
 ego = Car at egoSpawnPt,
 	with blueprint MODEL,
-	with behavior FollowLaneBehavior(target_speed=EGO_SPEED)
+	with behavior FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
 
-adversary = Car following roadDirection for ADV_DIST,
+adversary = Car following roadDirection for globalParameters.ADV_DIST,
 	with blueprint MODEL,
 	with behavior AdversaryBehavior()
 

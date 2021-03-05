@@ -20,9 +20,9 @@ model scenic.simulators.carla.model
 
 MODEL = 'vehicle.lincoln.mkz2017'
 
-EGO_INIT_DIST = VerifaiRange(10, 15)
-EGO_SPEED = VerifaiRange(7, 10)
-EGO_BRAKE = VerifaiRange(0.5, 1.0)
+param EGO_INIT_DIST = VerifaiRange(10, 15)
+param EGO_SPEED = VerifaiRange(7, 10)
+param EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
 STAT_INIT_DIST = [0, 5]
 
@@ -39,12 +39,12 @@ TERM_DIST = 70
 behavior EgoBehavior():
 	try:
 		while (distance to adversary) < BYPASS_DIST:
-			take SetBrakeAction(EGO_BRAKE)
+			take SetBrakeAction(globalParameters.EGO_BRAKE)
 		rightLaneSec = self.laneSection.laneToRight
 		do LaneChangeBehavior(
 				laneSectionToSwitch=rightLaneSec,
-				target_speed=EGO_SPEED)
-		do FollowLaneBehavior(target_speed=EGO_SPEED)
+				target_speed=globalParameters.EGO_SPEED)
+		do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
 
 #################################
 # SPATIAL RELATIONS             #
@@ -69,7 +69,7 @@ advSpawnPt = OrientedPoint in advInitLane.centerline
 stationary = Car at statSpawnPt,
 	with blueprint MODEL
 
-ego = Car behind stationary by EGO_INIT_DIST,
+ego = Car behind stationary by globalParameters.EGO_INIT_DIST,
 	with blueprint MODEL,
 	with behavior EgoBehavior()
 

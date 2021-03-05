@@ -21,12 +21,12 @@ model scenic.simulators.carla.model
 
 MODEL = 'vehicle.lincoln.mkz2017'
 
-EGO_SPEED = VerifaiRange(7, 10)
-EGO_BRAKE = VerifaiRange(0.7, 1.0)
+param EGO_SPEED = VerifaiRange(7, 10)
+param EGO_BRAKE = VerifaiRange(0.7, 1.0)
 
-ADV_DIST = VerifaiRange(10, 15)
-ADV_INIT_SPEED = VerifaiRange(2, 4)
-ADV_END_SPEED = 2 * VerifaiRange(7, 10)
+param ADV_DIST = VerifaiRange(10, 15)
+param ADV_INIT_SPEED = VerifaiRange(2, 4)
+param ADV_END_SPEED = 2 * VerifaiRange(7, 10)
 ADV_BUFFER_TIME = 5
 
 LEAD_DIST = ADV_DIST + 10
@@ -47,28 +47,28 @@ behavior DecelerateBehavior(brake):
 
 behavior EgoBehavior():
 	try:
-		do FollowLaneBehavior(target_speed=EGO_SPEED)
+		do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
 	interrupt when (distance to adversary) < BYPASS_DIST[0]:
 		fasterLaneSec = self.laneSection.fasterLane
 		do LaneChangeBehavior(
 				laneSectionToSwitch=fasterLaneSec,
-				target_speed=EGO_SPEED)
+				target_speed=globalParameters.EGO_SPEED)
 		try:
 			do FollowLaneBehavior(
-					target_speed=EGO_SPEED,
+					target_speed=globalParameters.EGO_SPEED,
 					laneToFollow=fasterLaneSec.lane) \
 				until (distance to adversary) > BYPASS_DIST[1]
 		interrupt when (distance to lead) < SAFE_DIST:
 			try:
-				do DecelerateBehavior(EGO_BRAKE)
+				do DecelerateBehavior(globalParameters.EGO_BRAKE)
 			interrupt when (distance to lead) > SAFE_DIST:
 				do FollowLaneBehavior(target_speed=LEAD_SPEED) for TERM_TIME seconds
 				terminate 
 
 behavior AdversaryBehavior():
-	do FollowLaneBehavior(target_speed=ADV_INIT_SPEED) \
+	do FollowLaneBehavior(target_speed=globalParameters.ADV_INIT_SPEED) \
 		until self.lane is not ego.lane
-	do FollowLaneBehavior(target_speed=ADV_END_SPEED)
+	do FollowLaneBehavior(target_speed=globalParameters.ADV_END_SPEED)
 
 behavior LeadBehavior():
 	fasterLaneSec = self.laneSection.fasterLane
@@ -92,7 +92,7 @@ ego = Car at egoSpawnPt,
 	with blueprint MODEL,
 	with behavior EgoBehavior()
 
-adversary = Car following roadDirection for ADV_DIST,
+adversary = Car following roadDirection for globalParameters.ADV_DIST,
 	with blueprint MODEL,
 	with behavior AdversaryBehavior()
 
