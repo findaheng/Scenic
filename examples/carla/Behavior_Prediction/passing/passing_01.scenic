@@ -17,6 +17,8 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
+MODEL = 'vehicle.lincoln.mkz2017'
+
 EGO_SPEED = VerifaiRange(7, 10)
 
 ADV_DIST = VerifaiRange(10, 25)
@@ -61,9 +63,11 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 #################################
 
 ego = Car at egoSpawnPt,
+	with blueprint MODEL,
 	with behavior EgoBehavior()
 
 adversary = Car following roadDirection for ADV_DIST,
+	with blueprint MODEL,
 	with behavior FollowLaneBehavior(target_speed=ADV_SPEED)
 
 require (distance to intersection) > INIT_DIST

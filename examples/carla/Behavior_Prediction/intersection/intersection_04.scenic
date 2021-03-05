@@ -1,10 +1,9 @@
 """
 TITLE: Behavior Prediction - Intersection 04
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Ego vehicle either goes straight or makes an unprotected 
-left turn at signalized intersection and must suddenly stop to avoid 
-collision when adversary vehicle from perpendicular lane makes a left 
-turn shortly after light turns red.
+DESCRIPTION: Ego vehicle either goes straight or makes a left turn at 
+4-way intersection and must suddenly stop to avoid collision when 
+adversary vehicle from perpendicular lane makes a left turn.
 """
 
 #################################
@@ -19,6 +18,8 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
+MODEL = 'vehicle.lincoln.mkz2017'
+
 EGO_INIT_DIST = [20, 25]
 EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = VerifaiRange(0.5, 1.0)
@@ -27,6 +28,7 @@ ADV_INIT_DIST = [15, 20]
 ADV_SPEED = VerifaiRange(7, 10)
 
 SAFETY_DIST = VerifaiRange(10, 20)
+CRASH_DIST = 5
 TERM_DIST = 70
 
 #################################
@@ -38,12 +40,14 @@ behavior EgoBehavior(trajectory):
 		do FollowTrajectoryBehavior(target_speed=EGO_SPEED, trajectory=trajectory)
 	interrupt when withinDistanceToAnyObjs(self, SAFETY_DIST):
 		take SetBrakeAction(EGO_BRAKE)
+	interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
+		terminate
 
 #################################
 # SPATIAL RELATIONS             #
 #################################
 
-intersection = Uniform(*filter(lambda i: i.is4Way and i.isSignalized, network.intersections))
+intersection = Uniform(*filter(lambda i: i.is4Way, network.intersections))
 
 egoInitLane = Uniform(*intersection.incomingLanes)
 egoManeuver = Uniform(*filter(lambda m:
@@ -66,9 +70,11 @@ advSpawnPt = OrientedPoint in advInitLane.centerline
 #################################
 
 ego = Car at egoSpawnPt,
+	with blueprint MODEL,
 	with behavior EgoBehavior(egoTrajectory)
 
 adversary = Car at advSpawnPt,
+	with blueprint MODEL,
 	with behavior FollowTrajectoryBehavior(target_speed=ADV_SPEED, trajectory=advTrajectory)
 
 require EGO_INIT_DIST[0] <= (distance to intersection) <= EGO_INIT_DIST[1]

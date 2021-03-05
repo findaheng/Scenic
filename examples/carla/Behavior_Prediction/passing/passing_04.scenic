@@ -17,6 +17,8 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
+MODEL = 'vehicle.lincoln.mkz2017'
+
 EGO_SPEED = VerifaiRange(6, 8)
 EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
@@ -70,12 +72,15 @@ egoLaneSecToSwitch = initLane.sectionAt(egoSpawnPt).laneToRight
 adversary_1, adversary_2, adversary_3 = Car, Car, Car
 
 ego = Car at egoSpawnPt,
+	with blueprint MODEL,
 	with behavior EgoBehavior()
 
 adversary_1 = Car following roadDirection for ADV1_DIST,
+	with blueprint MODEL,
 	with behavior FollowLaneBehavior(target_speed=ADV_SPEED)
 
 adversary_2 = Car following roadDirection for ADV2_DIST,
+	with blueprint MODEL,
 	with behavior Adversary2Behavior()
 
 require (distance to intersection) > INIT_DIST

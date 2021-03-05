@@ -39,6 +39,7 @@ TERM_DIST = 70
 roundabout = Uniform(*filter(lambda i: len(i.incomingLanes) == 7, network.intersections))
 
 egoInitLane = Uniform(*roundabout.incomingLanes)
+
 egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoInitLane.maneuvers))
 
 #################################

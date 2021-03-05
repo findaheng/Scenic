@@ -19,6 +19,8 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
+MODEL = 'vehicle.lincoln.mkz2017'
+
 EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = VerifaiRange(0.7, 1.0)
 
@@ -87,12 +89,15 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 #################################
 
 ego = Car at egoSpawnPt,
+	with blueprint MODEL,
 	with behavior EgoBehavior()
 
 adversary = Car following roadDirection for ADV_DIST,
+	with blueprint MODEL,
 	with behavior AdversaryBehavior()
 
 lead = Car following roadDirection for LEAD_DIST,
+	with blueprint MODEL,
 	with behavior LeadBehavior()
 
 require (distance to intersection) > INIT_DIST
