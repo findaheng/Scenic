@@ -30,7 +30,6 @@ ADV_INIT_DIST = [15, 20]
 ADV_SPEED = 10
 
 BYPASS_DIST = 8
-CRASH_DIST = 2
 TERM_DIST = 70
 
 #################################
@@ -46,8 +45,6 @@ behavior EgoBehavior():
 				laneSectionToSwitch=rightLaneSec,
 				target_speed=EGO_SPEED)
 		do FollowLaneBehavior(target_speed=EGO_SPEED)
-	interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
-		terminate
 
 #################################
 # SPATIAL RELATIONS             #
