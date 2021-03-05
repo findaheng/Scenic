@@ -1,9 +1,9 @@
 """
-TITLE: Behavior Prediction - Intersection 05
+TITLE: Behavior Prediction - Intersection 07
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Ego vehicle waits at 4-way intersection for adversary 
-vehicle from oncoming parallel lane to complete a left turn before 
-making a right turn.
+DESCRIPTION: Ego vehicle makes a left turn at 3-way intersection and 
+must suddenly stop to avoid collision when adversary vehicle from 
+perpendicular lane continues straight.
 """
 
 #################################
@@ -24,7 +24,7 @@ EGO_INIT_DIST = [20, 25]
 param EGO_SPEED = VerifaiRange(7, 10)
 param EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
-ADV_INIT_DIST = [5, 15]
+ADV_INIT_DIST = [15, 20]
 param ADV_SPEED = VerifaiRange(7, 10)
 
 param SAFETY_DIST = VerifaiRange(10, 20)
@@ -47,21 +47,15 @@ behavior EgoBehavior(trajectory):
 # SPATIAL RELATIONS             #
 #################################
 
-intersection = Uniform(*filter(lambda i: i.is4Way, network.intersections))
+intersection = Uniform(*filter(lambda i: i.is3Way, network.intersections))
 
 egoInitLane = Uniform(*intersection.incomingLanes)
-egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.RIGHT_TURN, egoInitLane.maneuvers))
+egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.LEFT_TURN, egoInitLane.maneuvers))
 egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint in egoInitLane.centerline
 
-advInitLane = Uniform(*filter(lambda m:
-		m.type is ManeuverType.STRAIGHT,
-		Uniform(*filter(lambda m: 
-			m.type is ManeuverType.STRAIGHT, 
-			egoInitLane.maneuvers)
-		).reverseManeuvers)
-	).startLane
-advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.LEFT_TURN, advInitLane.maneuvers))
+advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoManeuver.conflictingManeuvers))
+advInitLane = advManeuver.startLane
 advTrajectory = [advInitLane, advManeuver.connectingLane, advManeuver.endLane]
 advSpawnPt = OrientedPoint in advInitLane.centerline
 

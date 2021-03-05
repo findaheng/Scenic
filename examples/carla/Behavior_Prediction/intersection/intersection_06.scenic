@@ -1,9 +1,8 @@
 """
 TITLE: Behavior Prediction - Intersection 06
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Ego vehicle makes a left turn at 3-way intersection and 
-must suddenly stop to avoid collision when adversary vehicle from 
-perpendicular lane continues straight.
+DESCRIPTION: Ego vehicle waits at 4-way intersection for adversary 
+vehicle from perpendicular lane to pass before making a right turn.
 """
 
 #################################
@@ -24,7 +23,7 @@ EGO_INIT_DIST = [20, 25]
 param EGO_SPEED = VerifaiRange(7, 10)
 param EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
-ADV_INIT_DIST = [15, 20]
+ADV_INIT_DIST = [10, 15]
 param ADV_SPEED = VerifaiRange(7, 10)
 
 param SAFETY_DIST = VerifaiRange(10, 20)
@@ -47,15 +46,21 @@ behavior EgoBehavior(trajectory):
 # SPATIAL RELATIONS             #
 #################################
 
-intersection = Uniform(*filter(lambda i: i.is3Way, network.intersections))
+intersection = Uniform(*filter(lambda i: i.is4Way, network.intersections))
 
 egoInitLane = Uniform(*intersection.incomingLanes)
-egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.LEFT_TURN, egoInitLane.maneuvers))
+egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.RIGHT_TURN, egoInitLane.maneuvers))
 egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint in egoInitLane.centerline
 
-advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoManeuver.conflictingManeuvers))
-advInitLane = advManeuver.startLane
+advInitLane = Uniform(*filter(lambda m:
+		m.type is ManeuverType.STRAIGHT,
+		Uniform(*filter(lambda m: 
+			m.type is ManeuverType.STRAIGHT, 
+			egoInitLane.maneuvers)
+		).conflictingManeuvers)
+	).startLane
+advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advInitLane.maneuvers))
 advTrajectory = [advInitLane, advManeuver.connectingLane, advManeuver.endLane]
 advSpawnPt = OrientedPoint in advInitLane.centerline
 

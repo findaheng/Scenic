@@ -58,8 +58,10 @@ egoSpawnPt = OrientedPoint in egoInitLane.centerline
 
 advInitLane = Uniform(*filter(lambda m:
 		m.type is ManeuverType.STRAIGHT,
-		Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoInitLane.maneuvers))
-			.conflictingManeuvers)
+		Uniform(*filter(lambda m: 
+			m.type is ManeuverType.STRAIGHT, 
+			egoInitLane.maneuvers)
+		).conflictingManeuvers)
 	).startLane
 advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advInitLane.maneuvers))
 advTrajectory = [advInitLane, advManeuver.connectingLane, advManeuver.endLane]
