@@ -3,7 +3,8 @@ TITLE: Behavior Prediction - Intersection 07
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Ego vehicle makes a left turn at 3-way intersection and 
 must suddenly stop to avoid collision when adversary vehicle from 
-perpendicular lane continues straight.
+lateral lane continues straight.
+SOURCE: NHSTA, #30
 """
 
 #################################

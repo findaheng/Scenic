@@ -5,6 +5,7 @@ DESCRIPTION: Ego vehicle performs a lane change to bypass a slow
 adversary vehicle but cannot return to its original lane because 
 the adversary accelerates. Ego vehicle must then slow down to avoid 
 collision with leading vehicle in new lane.
+SOURCE: NHSTA, #16
 """
 
 #################################

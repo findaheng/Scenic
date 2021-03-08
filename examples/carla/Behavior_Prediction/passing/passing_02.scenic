@@ -3,6 +3,7 @@ TITLE: Behavior Prediction - Passing 02
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Adversary vehicle performs a lane change to bypass the 
 slow ego vehicle before returning to its original lane.
+SOURCE: NHSTA, #16
 """
 
 #################################

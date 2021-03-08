@@ -1,8 +1,9 @@
 """
 TITLE: Behavior Prediction - Passing 05
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Ego vehicle performs multiple lane changes to bypass 
-three slow adversary vehicles.
+DESCRIPTION: Ego vehicle performs multiple lane changes to bypass three 
+slow adversary vehicles.
+SOURCE: NHSTA, #16
 """
 
 #################################

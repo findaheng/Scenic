@@ -3,6 +3,7 @@ TITLE: Behavior Prediction - Passing 01
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Ego vehicle performs a lane change to bypass a slow 
 adversary vehicle before returning to its original lane.
+SOURCE: NHSTA, #16
 """
 
 #################################

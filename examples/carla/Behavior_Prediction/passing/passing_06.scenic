@@ -2,8 +2,9 @@
 TITLE: Behavior Prediction - Passing 06
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Ego vehicle waits for adversary vehicle to pass before 
-performing a lane change to bypass a stationary vehicle waiting to make 
-a left turn at a 4-way intersection.
+performing a lane change to bypass a stationary vehicle waiting to 
+make a left turn at a 4-way intersection.
+SOURCE: NHSTA, #16
 """
 
 #################################

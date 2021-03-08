@@ -3,7 +3,8 @@ TITLE: Behavior Prediction - Intersection 04
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Ego vehicle either goes straight or makes a left turn at 
 4-way intersection and must suddenly stop to avoid collision when 
-adversary vehicle from perpendicular lane makes a left turn.
+adversary vehicle from lateral lane makes a left turn.
+SOURCE: NHSTA, #28 #29
 """
 
 #################################

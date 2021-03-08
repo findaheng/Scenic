@@ -4,6 +4,7 @@ AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Ego vehicle goes straight at 3-way intersection and must 
 suddenly stop to avoid collision when adversary vehicle makes a left 
 turn.
+SOURCE: NHSTA, #30
 """
 
 #################################

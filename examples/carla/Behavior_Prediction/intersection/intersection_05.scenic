@@ -1,9 +1,9 @@
 """
 TITLE: Behavior Prediction - Intersection 05
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Ego vehicle waits at 4-way intersection for adversary 
-vehicle from oncoming parallel lane to complete a left turn before 
-making a right turn.
+DESCRIPTION: Ego vehicle makes a right turn at 4-way intersection 
+while adversary vehicle from opposite lane makes a left turn.
+SOURCE: NHSTA, #25
 """
 
 #################################

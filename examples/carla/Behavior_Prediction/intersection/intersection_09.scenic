@@ -1,8 +1,9 @@
 """
 TITLE: Behavior Prediction - Intersection 09
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Ego vehicle waits at 3-way intersection for adversary 
-vehicle from perpendicular lane to pass before making a right turn.
+DESCRIPTION: Ego vehicle makes a right turn at 3-way intersection 
+while adversary vehicle from lateral lane goes straight.
+SOURCE: NHSTA, #28 #29
 """
 
 #################################
