@@ -1,16 +1,16 @@
 """
-TITLE: Behavior Prediction - Roundabout 01
+TITLE: Behavior Prediction - Merging 05
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: 
-SOURCE: INTERACTION, DR_CHN_Roundabout_LN
+SOURCE: INTERACTION, DR_CHN_Merging_MT
 """
 
 #################################
 # MAP AND MODEL                 #
 #################################
 
-param map = localPath('../../../../tests/formats/opendrive/maps/CARLA/Town03.xodr')
-param carla_map = 'Town03'
+param map = localPath('../../../../tests/formats/opendrive/maps/CARLA/Town06.xodr')
+param carla_map = 'Town06'
 model scenic.simulators.carla.model
 
 #################################
@@ -37,11 +37,6 @@ TERM_DIST = 70
 # SPATIAL RELATIONS             #
 #################################
 
-roundabout = Uniform(*filter(lambda i: len(i.incomingLanes) == 7, network.intersections))
-
-egoInitLane = Uniform(*roundabout.incomingLanes)
-
-egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoInitLane.maneuvers))
 
 #################################
 # SCENARIO SPECIFICATION        #
