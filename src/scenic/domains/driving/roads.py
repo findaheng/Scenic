@@ -176,15 +176,15 @@ class Maneuver(_ElementReferencer):
     @property
     @utils.cached
     def reverseManeuvers(self) -> Tuple[Maneuver]:
-    	"""Tuple[Maneuver]: Maneuvers whose start and end roads are the reverse of this one's."""
-    	start = self.startLane.road
-    	end = self.endLane.road
-    	reverses = []
-    	for maneuver in self.intersection.maneuvers:
-    		if (maneuver.startLane.road is end
-    			and maneuver.endLane.road is start):
-    			reverses.append(maneuver)
-    	return tuple(reverses)
+        """Tuple[Maneuver]: Maneuvers whose start and end roads are the reverse of this one's."""
+        start = self.startLane.road
+        end = self.endLane.road
+        reverses = []
+        for maneuver in self.intersection.maneuvers:
+            if (maneuver.startLane.road is end
+                and maneuver.endLane.road is start):
+                reverses.append(maneuver)
+        return tuple(reverses)
 
 ## Road networks
 
@@ -1116,37 +1116,67 @@ class Network:
 
     @distributionMethod
     def toLaneGCNGraph() -> dict:
-    	"""Convert network to lane graph as specified by LaneGCN format."""
+        """Convert network to lane graph as specified by LaneGCN format."""
 
-    	ctrs, feats = [], []
-    	pre_pairs, suc_pairs, left_pairs, right_pairs = [], [], [], []
-    	for i, laneSec in enumerate(self.laneSections):
+        ctrs, feats = [], []
+        pre_pairs, suc_pairs, left_pairs, right_pairs = [], [], [], []
+        for i, laneSec in enumerate(self.laneSections):
 
-    		ctrln = laneSec.centerline.points
-    		ctrs.append(np.asarray((ctrln[:-1] + ctrln[1:]) / 2.0, np.float32))
-    		feats.append(np.asarray(ctrln[1:] - ctrln[:-1], np.float32))
+            ctrln = laneSec.centerline.points
+            ctrs.append(np.asarray((ctrln[:-1] + ctrln[1:]) / 2.0, np.float32))
+            feats.append(np.asarray(ctrln[1:] - ctrln[:-1], np.float32))
 
-    		if laneSec._predecessor is not None:
-    			j = self.laneSections.index(laneSec.predecessor)
-    			pre_pairs.append([i, j])
-    		if laneSec._successor is not None:
-    			j = self.laneSections.index(laneSec.successor)
-    			suc_pairs.append([i, j])
-    		if laneSec._laneToLeft is not None:
-    			j = self.laneSections.index(laneSec.laneToLeft)
-    			left_pairs.append([i, j])
-    		if laneSec._laneToRight is not None:
-    			j = self.laneSections.index(laneSec.laneToRight)
-    			left_pairs.append([i, j])
+            if laneSec._predecessor is not None:
+                j = self.laneSections.index(laneSec.predecessor)
+                pre_pairs.append([i, j])
+            if laneSec._successor is not None:
+                j = self.laneSections.index(laneSec.successor)
+                suc_pairs.append([i, j])
+            if laneSec._laneToLeft is not None:
+                j = self.laneSections.index(laneSec.laneToLeft)
+                left_pairs.append([i, j])
+            if laneSec._laneToRight is not None:
+                j = self.laneSections.index(laneSec.laneToRight)
+                left_pairs.append([i, j])
 
-    	node_idcs = []
+        node_idcs = []
         count = 0
         for i, ctr in enumerate(ctrs):
             node_idcs.append(range(count, count + len(ctr)))
             count += len(ctr)
         num_nodes = count
 
-    	pre_pairs = np.asarray(pre_pairs, np.int64)
+        pre, suc = dict(), dict()
+        for key in ['u', 'v']:
+            pre[key], suc[key] = [], []
+        for i, laneSec in enumerate(self.laneSections):
+            idcs = node_idcs[i]
+            
+            pre['u'] += idcs[1:]
+            pre['v'] += idcs[:-1]
+            if laneSec._predecessors is not None:
+                j = self.laneSections.index(laneSec.predecessor)
+                for nbr_id in lane.predecessors:
+                    if nbr_id in lane_ids:
+                        j = lane_ids.index(nbr_id)
+                pre['u'].append(idcs[0])
+                pre['v'].append(node_idcs[j][-1])
+                    
+            suc['u'] += idcs[:-1]
+            suc['v'] += idcs[1:]
+            if laneSec._successors is not None:
+                for nbr_id in lane.successors:
+                    if nbr_id in lane_ids:
+                        j = lane_ids.index(nbr_id)
+                        suc['u'].append(idcs[-1])
+                        suc['v'].append(node_idcs[j][0])
+
+        lane_idcs = []
+        for i, idcs in enumerate(node_idcs):
+            lane_idcs.append(i * np.ones(len(idcs), np.int64))
+        lane_idcs = np.concatenate(lane_idcs, 0)
+
+        pre_pairs = np.asarray(pre_pairs, np.int64)
         suc_pairs = np.asarray(suc_pairs, np.int64)
         left_pairs = np.asarray(left_pairs, np.int64)
         right_pairs = np.asarray(right_pairs, np.int64)
@@ -1166,7 +1196,7 @@ class Network:
         graph['left_pairs'] = left_pairs
         graph['right_pairs'] = right_pairs
 
-    	return graph
+        return graph
 
     def show(self):
         """Render a schematic of the road network for debugging.
