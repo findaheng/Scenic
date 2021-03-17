@@ -27,6 +27,7 @@ import struct
 import weakref
 
 import attr
+import numpy as np
 from shapely.geometry import Polygon, MultiPolygon
 
 from scenic.core.distributions import distributionFunction, distributionMethod
@@ -1112,6 +1113,60 @@ class Network:
         if road is not None:
             return road.nominalDirectionsAt(point)
         return ()
+
+    @distributionMethod
+    def toLaneGCNGraph() -> dict:
+    	"""Convert network to lane graph as specified by LaneGCN format."""
+
+    	ctrs, feats = [], []
+    	pre_pairs, suc_pairs, left_pairs, right_pairs = [], [], [], []
+    	for i, laneSec in enumerate(self.laneSections):
+
+    		ctrln = laneSec.centerline.points
+    		ctrs.append(np.asarray((ctrln[:-1] + ctrln[1:]) / 2.0, np.float32))
+    		feats.append(np.asarray(ctrln[1:] - ctrln[:-1], np.float32))
+
+    		if laneSec._predecessor is not None:
+    			j = self.laneSections.index(laneSec.predecessor)
+    			pre_pairs.append([i, j])
+    		if laneSec._successor is not None:
+    			j = self.laneSections.index(laneSec.successor)
+    			suc_pairs.append([i, j])
+    		if laneSec._laneToLeft is not None:
+    			j = self.laneSections.index(laneSec.laneToLeft)
+    			left_pairs.append([i, j])
+    		if laneSec._laneToRight is not None:
+    			j = self.laneSections.index(laneSec.laneToRight)
+    			left_pairs.append([i, j])
+
+    	node_idcs = []
+        count = 0
+        for i, ctr in enumerate(ctrs):
+            node_idcs.append(range(count, count + len(ctr)))
+            count += len(ctr)
+        num_nodes = count
+
+    	pre_pairs = np.asarray(pre_pairs, np.int64)
+        suc_pairs = np.asarray(suc_pairs, np.int64)
+        left_pairs = np.asarray(left_pairs, np.int64)
+        right_pairs = np.asarray(right_pairs, np.int64)
+
+        graph = dict()
+        graph['ctrs'] = np.concatenate(ctrs, 0)
+        graph['num_nodes'] = num_nodes
+        graph['feats'] = np.concatenate(feats, 0)
+        graph['turn'] = np.concatenate(turn, 0)  # TODO
+        graph['control'] = np.concatenate(control, 0)  # TODO
+        graph['intersect'] = np.concatenate(intersect, 0)  # TODO
+        graph['pre'] = [pre]  # TODO
+        graph['suc'] = [suc]  # TODO
+        graph['lane_idcs'] = lane_idcs  # TODO
+        graph['pre_pairs'] = pre_pairs
+        graph['suc_pairs'] = suc_pairs
+        graph['left_pairs'] = left_pairs
+        graph['right_pairs'] = right_pairs
+
+    	return graph
 
     def show(self):
         """Render a schematic of the road network for debugging.
