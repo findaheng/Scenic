@@ -1119,12 +1119,15 @@ class Network:
         """Convert network to lane graph as specified by LaneGCN format."""
 
         ctrs, feats = [], []
+        turn, control, intersect = [], [], []
         pre_pairs, suc_pairs, left_pairs, right_pairs = [], [], [], []
         for i, laneSec in enumerate(self.laneSections):
 
             ctrln = laneSec.centerline.points
             ctrs.append(np.asarray((ctrln[:-1] + ctrln[1:]) / 2.0, np.float32))
             feats.append(np.asarray(ctrln[1:] - ctrln[:-1], np.float32))
+
+            # TODO: Handle `turn`, `control`, and `intersect`
 
             if laneSec._predecessor is not None:
                 j = self.laneSections.index(laneSec.predecessor)
@@ -1156,20 +1159,15 @@ class Network:
             pre['v'] += idcs[:-1]
             if laneSec._predecessors is not None:
                 j = self.laneSections.index(laneSec.predecessor)
-                for nbr_id in lane.predecessors:
-                    if nbr_id in lane_ids:
-                        j = lane_ids.index(nbr_id)
                 pre['u'].append(idcs[0])
                 pre['v'].append(node_idcs[j][-1])
                     
             suc['u'] += idcs[:-1]
             suc['v'] += idcs[1:]
             if laneSec._successors is not None:
-                for nbr_id in lane.successors:
-                    if nbr_id in lane_ids:
-                        j = lane_ids.index(nbr_id)
-                        suc['u'].append(idcs[-1])
-                        suc['v'].append(node_idcs[j][0])
+                j = self.laneSections.index(laneSec.successor)
+                suc['u'].append(idcs[-1])
+                suc['v'].append(node_idcs[j][0])
 
         lane_idcs = []
         for i, idcs in enumerate(node_idcs):
@@ -1185,12 +1183,12 @@ class Network:
         graph['ctrs'] = np.concatenate(ctrs, 0)
         graph['num_nodes'] = num_nodes
         graph['feats'] = np.concatenate(feats, 0)
-        graph['turn'] = np.concatenate(turn, 0)  # TODO
-        graph['control'] = np.concatenate(control, 0)  # TODO
-        graph['intersect'] = np.concatenate(intersect, 0)  # TODO
-        graph['pre'] = [pre]  # TODO
-        graph['suc'] = [suc]  # TODO
-        graph['lane_idcs'] = lane_idcs  # TODO
+        graph['turn'] = np.concatenate(turn, 0)
+        graph['control'] = np.concatenate(control, 0)
+        graph['intersect'] = np.concatenate(intersect, 0)
+        graph['pre'] = [pre]
+        graph['suc'] = [suc]
+        graph['lane_idcs'] = lane_idcs
         graph['pre_pairs'] = pre_pairs
         graph['suc_pairs'] = suc_pairs
         graph['left_pairs'] = left_pairs
