@@ -17,6 +17,8 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
+MODEL = 'vehicle.lincoln.mkz2017'
+
 EGO_INIT_DIST = [20, 25]
 EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = VerifaiRange(0.5, 1.0)
@@ -48,6 +50,7 @@ egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoInit
 #################################
 
 ego = Car at egoSpawnPt,
+	with blueprint MODEL,
 	with behavior FollowLaneBehavior(EGO_SPEED)
 
 require EGO_INIT_DIST[0] <= (distance to intersection) <= EGO_INIT_DIST[1]
