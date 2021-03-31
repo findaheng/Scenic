@@ -1115,7 +1115,7 @@ class Network:
         return ()
 
     @distributionMethod
-    def toLaneGCNGraph() -> dict:
+    def toLaneGraph() -> dict:
         """Convert network to lane graph as specified by LaneGCN format."""
 
         ctrs, feats = [], []
