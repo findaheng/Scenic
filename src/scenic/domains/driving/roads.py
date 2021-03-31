@@ -1127,7 +1127,9 @@ class Network:
             ctrs.append(np.asarray((ctrln[:-1] + ctrln[1:]) / 2.0, np.float32))
             feats.append(np.asarray(ctrln[1:] - ctrln[:-1], np.float32))
 
-            # TODO: Handle `turn`, `control`, and `intersect`
+            pt = ctrln[len(ctrln) / 2]
+            is_intersection = intersectionAt(pt) is not None
+            intersect.append(is_intersection * np.ones(num_segs, np.float32))
 
             if laneSec._predecessor is not None:
                 j = self.laneSections.index(laneSec.predecessor)
