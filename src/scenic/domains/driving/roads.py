@@ -1124,7 +1124,7 @@ class Network:
         for i, laneSec in enumerate(self.laneSections):
 
             ctrln = laneSec.centerline.points
-            ctrs.append(np.asarray(ctrln[:-1] + ctrln[1:]) / 2.0, np.float32)
+            ctrs.append(np.asarray((ctrln[:-1] + ctrln[1:]) / 2.0, np.float32))
             feats.append(np.asarray(ctrln[1:] - ctrln[:-1], np.float32))
 
             pt = ctrln[len(ctrln) / 2]
