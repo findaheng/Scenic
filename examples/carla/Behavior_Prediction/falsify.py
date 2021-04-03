@@ -29,7 +29,7 @@ class ADE_FDE(multi_objective_monitor):
 		        track_id = '00000000-0000-0000-0000-000000000000'
 		        for timestamp, agent_traj in enumerate(hist):
 		            writer.writerow([timestamp, track_id, 'AV', agent_traj[0], agent_traj[1], 'N/A'])
-		        f.close()
+		        csvfile.close()
 
 			# run behavior prediction model
 			os.chdir(model_path)
