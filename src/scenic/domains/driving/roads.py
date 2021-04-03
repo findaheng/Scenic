@@ -1122,13 +1122,14 @@ class Network:
         turn, control, intersect = [], [], []
         pre_pairs, suc_pairs, left_pairs, right_pairs = [], [], [], []
         for i, laneSec in enumerate(self.laneSections):
+            ctrln = np.asarray(laneSec.centerline.points)
+            num_segs = len(ctrln) - 1
 
-            ctrln = laneSec.centerline.points
             ctrs.append(np.asarray((ctrln[:-1] + ctrln[1:]) / 2.0, np.float32))
             feats.append(np.asarray(ctrln[1:] - ctrln[:-1], np.float32))
 
-            pt = ctrln[len(ctrln) / 2]
-            is_intersection = intersectionAt(pt) is not None
+            pt = tuple(ctrln[len(ctrln) // 2])
+            is_intersection = self.intersectionAt(pt) is not None
             intersect.append(is_intersection * np.ones(num_segs, np.float32))
 
             if laneSec._predecessor is not None:
@@ -1159,14 +1160,14 @@ class Network:
             
             pre['u'] += idcs[1:]
             pre['v'] += idcs[:-1]
-            if laneSec._predecessors is not None:
+            if laneSec._predecessor is not None:
                 j = self.laneSections.index(laneSec.predecessor)
                 pre['u'].append(idcs[0])
                 pre['v'].append(node_idcs[j][-1])
                     
             suc['u'] += idcs[:-1]
             suc['v'] += idcs[1:]
-            if laneSec._successors is not None:
+            if laneSec._successor is not None:
                 j = self.laneSections.index(laneSec.successor)
                 suc['u'].append(idcs[-1])
                 suc['v'].append(node_idcs[j][0])
@@ -1185,8 +1186,8 @@ class Network:
         graph['ctrs'] = np.concatenate(ctrs, 0)
         graph['num_nodes'] = num_nodes
         graph['feats'] = np.concatenate(feats, 0)
-        graph['turn'] = np.concatenate(turn, 0)
-        graph['control'] = np.concatenate(control, 0)
+        graph['turn'] = np.asarray(turn)
+        graph['control'] = np.asarray(control)
         graph['intersect'] = np.concatenate(intersect, 0)
         graph['pre'] = [pre]
         graph['suc'] = [suc]
