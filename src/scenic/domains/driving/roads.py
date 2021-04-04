@@ -1128,6 +1128,25 @@ class Network:
             ctrs.append(np.asarray((ctrln[:-1] + ctrln[1:]) / 2.0, np.float32))
             feats.append(np.asarray(ctrln[1:] - ctrln[:-1], np.float32))
 
+            x = np.zeros((num_segs, 2), np.float32)
+            found = False
+            for intersec in self.intersections:
+                for mnv in intersec.maneuvers:
+                    if laneSec in mnv.connectingLane.sections:
+                        found = True
+                        if mnv.type is ManeuverType.RIGHT_TURN:
+                            x[:, 1] = 1
+                        elif mnv.type is ManeuverType.LEFT_TURN:
+                            x[:, 0] = 1
+                    if found:
+                        break
+                if found:
+                    break
+            turn.append(x)
+
+            # traffic control not yet supported by Network
+            control.append(False * np.ones(num_segs, np.float32))
+
             pt = tuple(ctrln[len(ctrln) // 2])
             is_intersection = self.intersectionAt(pt) is not None
             intersect.append(is_intersection * np.ones(num_segs, np.float32))
@@ -1186,8 +1205,8 @@ class Network:
         graph['ctrs'] = np.concatenate(ctrs, 0)
         graph['num_nodes'] = num_nodes
         graph['feats'] = np.concatenate(feats, 0)
-        graph['turn'] = np.asarray(turn)
-        graph['control'] = np.asarray(control)
+        graph['turn'] = np.concatenate(turn, 0)
+        graph['control'] = np.concatenate(control, 0)
         graph['intersect'] = np.concatenate(intersect, 0)
         graph['pre'] = [pre]
         graph['suc'] = [suc]
