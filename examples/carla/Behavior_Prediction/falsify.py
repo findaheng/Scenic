@@ -12,7 +12,7 @@ from verifai.scenic_server import ScenicServer
 from verifai.falsifier import generic_falsifier, generic_parallel_falsifier
 from verifai.monitor import multi_objective_monitor
 
-class ADE_FDE(multi_objective_monitor):
+class ADE_FDE_MR(multi_objective_monitor):
 	def __init__(self, model_path):
 		self.model_path = model_path
 		self.num_objectives = 2
