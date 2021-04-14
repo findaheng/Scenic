@@ -21,11 +21,11 @@ model scenic.simulators.carla.model
 
 MODEL = 'vehicle.lincoln.mkz2017'
 
-EGO_INIT_DIST = [20, 25]
+EGO_INIT_DIST = [20, 40]
 param EGO_SPEED = VerifaiRange(7, 10)
 param EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
-ADV_INIT_DIST = [15, 20]
+ADV_INIT_DIST = [0, 20]
 param ADV_SPEED = VerifaiRange(7, 10)
 
 param SAFETY_DIST = VerifaiRange(10, 20)
