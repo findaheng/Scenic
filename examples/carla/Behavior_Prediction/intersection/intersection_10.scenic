@@ -38,14 +38,13 @@ TERM_DIST = 70
 #################################
 
 behavior EgoBehavior():
-	try:
-		while (distance to adversary) < BYPASS_DIST:
-			take SetBrakeAction(globalParameters.EGO_BRAKE)
-		rightLaneSec = self.laneSection.laneToRight
-		do LaneChangeBehavior(
-				laneSectionToSwitch=rightLaneSec,
-				target_speed=globalParameters.EGO_SPEED)
-		do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
+	while (distance to adversary) < BYPASS_DIST:
+		take SetBrakeAction(globalParameters.EGO_BRAKE)
+	rightLaneSec = self.laneSection.laneToRight
+	do LaneChangeBehavior(
+			laneSectionToSwitch=rightLaneSec,
+			target_speed=globalParameters.EGO_SPEED)
+	do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
 
 #################################
 # SPATIAL RELATIONS             #
