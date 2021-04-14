@@ -65,10 +65,10 @@ class ADE_FDE_MR(multi_objective_monitor):
 def run_experiment(path, monitor, parallel=False):
 	sampler = ScenicSampler.fromScenario(path)
 	falsifier_params = DotMap(
-		n_iters=None,
+		n_iters=10,  
 		save_error_table=True,
 		save_safe_table=True,
-		max_time=60
+		max_time=None
 	)
 	server_options = DotMap(maxSteps=100, verbosity=0)
 	
