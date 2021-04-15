@@ -1120,21 +1120,21 @@ class Network:
 
         pre_lookup, suc_lookup = dict(), dict()
         for i, laneSec in enumerate(self.laneSections):
-        	if laneSec._predecessor is not None:
+            if laneSec._predecessor is not None:
                 j = self.laneSections.index(laneSec.predecessor)
                 if i not in pre_lookup:
-                	pre_lookup[i] = set()
+                    pre_lookup[i] = set()
                 pre_lookup[i].add(j)
                 if j not in suc_lookup:
-                	suc_lookup[j] = set()
+                    suc_lookup[j] = set()
                 suc_lookup[j].add(i)
             if laneSec._successor is not None:
                 j = self.laneSections.index(laneSec.successor)
                 if i not in suc_lookup:
-                	suc_lookup[i] = set()
+                    suc_lookup[i] = set()
                 suc_lookup[i].add(j)
                 if j not in pre_lookup:
-                	pre_lookup[j] = set()
+                    pre_lookup[j] = set()
                 pre_lookup[j].add(i)
 
         ctrs, feats = [], []
@@ -1172,10 +1172,10 @@ class Network:
 
             if i in pre_lookup:
                 for j in pre_lookup[i]:
-	                pre_pairs.append([i, j])
+                    pre_pairs.append([i, j])
             if i in suc_lookup:
                 for j in suc_lookup[i]:
-                	suc_pairs.append([i, j])
+                    suc_pairs.append([i, j])
             if laneSec._laneToLeft is not None:
                 j = self.laneSections.index(laneSec.laneToLeft)
                 left_pairs.append([i, j])
@@ -1200,15 +1200,15 @@ class Network:
             pre['v'] += idcs[:-1]
             if i in pre_lookup:
                 for j in pre_lookup[i]:
-	                pre['u'].append(idcs[0])
-	                pre['v'].append(node_idcs[j][-1])
+                    pre['u'].append(idcs[0])
+                    pre['v'].append(node_idcs[j][-1])
                     
             suc['u'] += idcs[:-1]
             suc['v'] += idcs[1:]
             if i in suc_lookup:
                 for j in suc_lookup[i]:
-	                suc['u'].append(idcs[-1])
-	                suc['v'].append(node_idcs[j][0])
+                    suc['u'].append(idcs[-1])
+                    suc['v'].append(node_idcs[j][0])
 
         lane_idcs = []
         for i, idcs in enumerate(node_idcs):
