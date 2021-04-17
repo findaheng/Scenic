@@ -76,5 +76,5 @@ adversary = Car at advSpawnPt,
 	with behavior FollowTrajectoryBehavior(target_speed=globalParameters.ADV_SPEED, trajectory=advTrajectory)
 
 require EGO_INIT_DIST[0] <= (distance to intersection) <= EGO_INIT_DIST[1]
-require ADV_INIT_DIST[0] <= (distance from adversary to intersection) <= EGO_INIT_DIST[1]
+require ADV_INIT_DIST[0] <= (distance from adversary to intersection) <= ADV_INIT_DIST[1]
 terminate when (distance to egoSpawnPt) > TERM_DIST
