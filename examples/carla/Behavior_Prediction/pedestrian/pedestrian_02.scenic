@@ -20,18 +20,18 @@ model scenic.simulators.carla.model
 
 MODEL = 'vehicle.lincoln.mkz2017'
 
-param EGO_INIT_DIST = VerifaiRange(-30, -20)
-param EGO_SPEED = VerifaiRange(7, 10)
-param EGO_BRAKE = VerifaiRange(0.5, 1.0)
+EGO_INIT_DIST = VerifaiRange(-30, -20)
+EGO_SPEED = VerifaiRange(7, 10)
+EGO_BRAKE = 1.0
 
-param ADV_INIT_DIST = VerifaiRange(-30, -20)
-param ADV_SPEED = VerifaiRange(7, 10)
-param ADV_BRAKE = VerifaiRange(0.5, 1.0)
+ADV_INIT_DIST = VerifaiRange(-30, -20)
+ADV_SPEED = VerifaiRange(7, 10)
+ADV_BRAKE = 1.0
 
-param PED_MIN_SPEED = 1.0
-param PED_THRESHOLD = 20
+PED_MIN_SPEED = 1.0
+PED_THRESHOLD = 20
 
-param SAFETY_DIST = VerifaiRange(5, 10)
+SAFETY_DIST = 10
 BUFFER_DIST = 75
 TERM_DIST = 50
 
@@ -63,14 +63,14 @@ spawnPt = OrientedPoint on egoLane.centerline
 # SCENARIO SPECIFICATION        #
 #################################
 
+ego = Car following roadDirection from spawnPt for EGO_INIT_DIST,
+    with blueprint MODEL,
+    with behavior EgoBehavior()
+
 ped = Pedestrian right of spawnPt by 3,
     with heading 90 deg relative to spawnPt.heading,
     with regionContainedIn None,
     with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
-
-ego = Car following roadDirection from spawnPt for EGO_INIT_DIST,
-    with blueprint MODEL,
-    with behavior EgoBehavior()
 
 adv = Car following roadDirection from (left of spawnPt by 3) for ADV_INIT_DIST,
     with blueprint MODEL,
