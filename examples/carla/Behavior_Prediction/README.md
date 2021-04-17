@@ -20,7 +20,7 @@ For questions and concerns, please contact Francis Indaheng at findaheng@berkele
 06. Ego vehicle makes a right turn at 4-way intersection while adversary vehicle from lateral lane goes straight.
 07. Ego vehicle makes a left turn at 3-way intersection and must suddenly stop to avoid collision when adversary vehicle from lateral lane continues straight.
 08. Ego vehicle goes straight at 3-way intersection and must suddenly stop to avoid collision when adversary vehicle makes a left turn.
-09. Ego vehicle makes a right turn at 3-way intersection while adversary vehicle from lateral lane goes straight (TIP)
+09. Ego vehicle makes a right turn at 3-way intersection while adversary vehicle from lateral lane goes straight.
 10. Ego Vehicle waits at 4-way intersection while adversary vehicle in adjacent lane passes before performing a lane change to bypass a stationary vehicle waiting to make a left turn.
 
 ## Bypassing
