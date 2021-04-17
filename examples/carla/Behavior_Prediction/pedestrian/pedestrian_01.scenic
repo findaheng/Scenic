@@ -36,7 +36,7 @@ TERM_DIST = 50
 #################################
 
 behavior EgoBehavior():
-	try:
+    try:
         do FollowLaneBehavior(target_speed=EGO_SPEED)
     interrupt when withinDistanceToObjsInLane(self, SAFETY_DIST):
         take SetBrakeAction(EGO_BRAKE)
@@ -46,7 +46,6 @@ behavior EgoBehavior():
 #################################
 
 lane = Uniform(*network.lanes)
-
 spawnPt = OrientedPoint on lane.centerline
 
 #################################
@@ -54,13 +53,13 @@ spawnPt = OrientedPoint on lane.centerline
 #################################
 
 ped = Pedestrian right of spawnPt by 3,
-	with heading 90 deg relative to spawnPt.heading,
-	with regionContainedIn None,
-	with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
+    with heading 90 deg relative to spawnPt.heading,
+    with regionContainedIn None,
+    with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
 
 ego = Car following roadDirection from spawnPt for EGO_INIT_DIST,
-	with blueprint MODEL,
-	with behavior EgoBehavior()
+    with blueprint MODEL,
+    with behavior EgoBehavior()
 
 require (distance to intersection) > BUFFER_DIST
 require always (ego.laneSection,_slowerLane is None)
