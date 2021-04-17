@@ -10,7 +10,7 @@ SOURCE: Carla Challenge, #03
 # MAP AND MODEL                 #
 #################################
 
-param map = localPath('../../../../tests/formats/opendrive/maps/CARLA/Town05.xodr')
+param map = localPath('../../../../tests/formats/opendrive/maps/CARLA/Town01.xodr')
 param carla_map = 'Town01'
 model scenic.simulators.carla.model
 
