@@ -49,21 +49,13 @@ behavior EgoBehavior(trajectory):
 
 intersection = Uniform(*filter(lambda i: i.is3Way, network.intersections))
 
-egoInitLane = Uniform(*intersection.incomingLanes)
-egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.RIGHT_TURN, egoInitLane.maneuvers))
+egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.RIGHT_TURN, intersection.maneuvers))
+egoInitLane = egoManeuver.startLane
 egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint in egoInitLane.centerline
 
-straightManeuver = filter(lambda m: m.type is ManeuverType.STRAIGHT, egoInitLane.maneuvers)
-if len(list(straightManeuver)) == 0:
-	advManeuver = Uniform(*filter(lambda m: m.type is STRAIGHT, egoManeuver.conflictingManeuvers))
-	advInitLane = advManeuver.startLane
-else:
-	advInitLane = Uniform(*filter(lambda m:
-			m.type is ManeuverType.STRAIGHT,
-			Uniform(straightManeuver).conflictingManeuvers)
-		).startLane
-	advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, advInitLane.maneuvers))
+advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, intersection.maneuvers))
+advInitLane = advManeuver.startLane
 advTrajectory = [advInitLane, advManeuver.connectingLane, advManeuver.endLane]
 advSpawnPt = OrientedPoint in advInitLane.centerline
 
