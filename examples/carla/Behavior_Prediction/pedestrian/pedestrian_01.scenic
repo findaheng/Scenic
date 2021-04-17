@@ -62,6 +62,6 @@ ego = Car following roadDirection from spawnPt for EGO_INIT_DIST,
     with behavior EgoBehavior()
 
 require (distance to intersection) > BUFFER_DIST
-require always (ego.laneSection,_slowerLane is None)
+require always (ego.laneSection._slowerLane is None)
 require always (ego.laneSection._fasterLane is None)
 terminate when (distance to spawnPt) > TERM_DIST

@@ -77,8 +77,8 @@ adv = Car following roadDirection from (left of spawnPt by 3) for ADV_INIT_DIST,
     with behavior AdvBehavior()
 
 require (distance from spawnPt to intersection) > BUFFER_DIST
-require always (ego.laneSection,_slowerLane is None)
+require always (ego.laneSection._slowerLane is None)
 require always (ego.laneSection._fasterLane is None)
-require always (adv.laneSection,_slowerLane is None)
+require always (adv.laneSection._slowerLane is None)
 require always (adv.laneSection._fasterLane is None)
 terminate when (distance to spawnPt) > TERM_DIST
