@@ -2,7 +2,7 @@
 TITLE: Behavior Prediction - Pedestrian 01
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Ego vehicle must stop suddenly to avoid collision when 
-pedestrian crosses the road unexpectedly .
+pedestrian crosses the road unexpectedly.
 SOURCE: Carla Challenge, #03
 """
 
@@ -20,14 +20,14 @@ model scenic.simulators.carla.model
 
 MODEL = 'vehicle.lincoln.mkz2017'
 
-EGO_INIT_DIST = VerifaiRange(-30, -20)
-EGO_SPEED = VerifaiRange(7, 10)
+param EGO_INIT_DIST = VerifaiRange(-30, -20)
+param EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = 1.0
 
 PED_MIN_SPEED = 1.0
 PED_THRESHOLD = 20
 
-SAFETY_DIST = 10
+param SAFETY_DIST = VerifaiRange(10, 15)
 BUFFER_DIST = 75
 TERM_DIST = 50
 
@@ -37,8 +37,8 @@ TERM_DIST = 50
 
 behavior EgoBehavior():
     try:
-        do FollowLaneBehavior(target_speed=EGO_SPEED)
-    interrupt when withinDistanceToObjsInLane(self, SAFETY_DIST):
+        do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
+    interrupt when withinDistanceToObjsInLane(self, globalParameters.SAFETY_DIST):
         take SetBrakeAction(EGO_BRAKE)
 
 #################################
@@ -52,7 +52,7 @@ spawnPt = OrientedPoint on lane.centerline
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car following roadDirection from spawnPt for EGO_INIT_DIST,
+ego = Car following roadDirection from spawnPt for globalParameters.EGO_INIT_DIST,
     with blueprint MODEL,
     with behavior EgoBehavior()
 

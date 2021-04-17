@@ -62,6 +62,8 @@ class ADE_FDE_MR(multi_objective_monitor):
 
 		super().__init__(specification, priority_graph)
 
+
+
 def run_experiment(path, monitor, parallel=False):
 	sampler = ScenicSampler.fromScenario(path)
 	falsifier_params = DotMap(
@@ -83,6 +85,37 @@ def run_experiment(path, monitor, parallel=False):
 	print(f'\nGenerated {len(falsifier.samples)} samples in {round(t, 3)} seconds with {falsifier.num_workers} worker(s)')
 	print(f'Number of counterexamples: {len(falsifier.error_table.table)}')
 	return falsifier
+
+def run_experiments(path, parallel=False, multi_objective=False, use_newtonian=False,
+					sampler_type=None, headless=False, output_dir='outputs')
+	if not os.path.exists(output_dir):
+		os.mkdir(output_dir)
+	paths = []
+	if os.path.isdir(path):
+		for root, _, files in os.walk(path):
+			for name in files:
+				fname = os.path.join(root, name)
+				if os.path.splitext(fname)[1] == '.scenic':
+					paths.append(fname)
+	else:
+		paths = [path]
+	for p in paths:
+		falsifier = run_experiment(p, parallel=parallel, multi_objective=multi_objective,
+									use_newtonian=use_newtonian, sampler_type=sampler_type, headless=headless)
+		df = pd.concat([falsifier.error_table.table, falsifier.safe_table.table])
+		root, _ = os.path.splitext(p)
+		outfile = root.split('/')[-1]
+		if parallel:
+			outfile += '_parallel'
+		if multi_objective:
+			outfile += '-multi'
+		if use_newtonian:
+			outfile += '_newton'
+		if sampler_type:
+			outfile += f'_{sampler_type}'
+		outfile += '.csv'
+		outpath = os.path.join(output_dir, outfile)
+		announ
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()

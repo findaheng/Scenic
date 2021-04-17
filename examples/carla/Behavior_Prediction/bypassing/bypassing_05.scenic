@@ -24,13 +24,13 @@ param EGO_SPEED = VerifaiRange(7, 10)
 param EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
 param ADV1_DIST = VerifaiRange(20, 25)
-param ADV2_DIST = ADV1_DIST + VerifaiRange(15, 20)
-param ADV3_DIST = ADV2_DIST + VerifaiRange(15, 20)
+param ADV2_DIST = globalParameters.ADV1_DIST + VerifaiRange(15, 20)
+param ADV3_DIST = globalParameters.ADV2_DIST + VerifaiRange(15, 20)
 param ADV_SPEED = VerifaiRange(2, 4)
 
 BYPASS_DIST = 15
 INIT_DIST = 50
-TERM_DIST = ADV3_DIST + 15
+TERM_DIST = globalParameters.ADV3_DIST + 15
 
 #################################
 # AGENT BEHAVIORS               #

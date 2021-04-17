@@ -30,11 +30,11 @@ param ADV_INIT_SPEED = VerifaiRange(2, 4)
 param ADV_END_SPEED = 2 * VerifaiRange(7, 10)
 ADV_BUFFER_TIME = 5
 
-LEAD_DIST = ADV_DIST + 10
-LEAD_SPEED = EGO_SPEED - 4
+LEAD_DIST = globalParameters.ADV_DIST + 10
+LEAD_SPEED = globalParameters.EGO_SPEED - 4
 
 BYPASS_DIST = [15, 10]
-SAFE_DIST = 10
+SAFE_DIST = 15
 INIT_DIST = 50
 TERM_DIST = 70
 TERM_TIME = 10

@@ -1,7 +1,7 @@
 """
 TITLE: Behavior Prediction - Pedestrian 02
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Both ego and adversary vehicle must stop suddenly to avoid 
+DESCRIPTION: Both ego and adversary vehicles must stop suddenly to avoid 
 collision when pedestrian crosses the road unexpectedly.
 SOURCE: Carla Challenge, #03
 """
@@ -20,18 +20,18 @@ model scenic.simulators.carla.model
 
 MODEL = 'vehicle.lincoln.mkz2017'
 
-EGO_INIT_DIST = VerifaiRange(-30, -20)
-EGO_SPEED = VerifaiRange(7, 10)
+param EGO_INIT_DIST = VerifaiRange(-30, -20)
+param EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = 1.0
 
-ADV_INIT_DIST = VerifaiRange(60, 20)
-ADV_SPEED = VerifaiRange(7, 10)
+param ADV_INIT_DIST = VerifaiRange(60, 20)
+param ADV_SPEED = VerifaiRange(7, 10)
 ADV_BRAKE = 1.0
 
 PED_MIN_SPEED = 1.0
 PED_THRESHOLD = 20
 
-SAFETY_DIST = 10
+param SAFETY_DIST = VerifaiRange(10, 15)
 BUFFER_DIST = 75
 TERM_DIST = 50
 
@@ -41,14 +41,14 @@ TERM_DIST = 50
 
 behavior EgoBehavior():
     try:
-        do FollowLaneBehavior(target_speed=EGO_SPEED)
-    interrupt when withinDistanceToObjsInLane(self, SAFETY_DIST):
+        do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
+    interrupt when withinDistanceToObjsInLane(self, globalParameters.SAFETY_DIST):
         take SetBrakeAction(EGO_BRAKE)
 
 behavior AdvBehavior():
     try:
-        do FollowLaneBehavior(target_speed=ADV_SPEED)
-    interrupt when withinDistanceToObjsInLane(self, SAFETY_DIST):
+        do FollowLaneBehavior(target_speed=globalParameters.ADV_SPEED)
+    interrupt when withinDistanceToObjsInLane(self, globalParameters.SAFETY_DIST):
         take SetBrakeAction(ADV_BRAKE)
 
 #################################
@@ -58,13 +58,13 @@ behavior AdvBehavior():
 road = Uniform(*filter(lambda r: len(r.forwardLanes.lanes) == len(r.backwardLanes.lanes) == 1, network.roads))
 egoLane = Uniform(road.forwardLanes.lanes)[0]
 spawnPt = OrientedPoint on egoLane.centerline
-advSpawnPt = OrientedPoint following roadDirection from spawnPt for ADV_INIT_DIST
+advSpawnPt = OrientedPoint following roadDirection from spawnPt for globalParameters.ADV_INIT_DIST
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car following roadDirection from spawnPt for EGO_INIT_DIST,
+ego = Car following roadDirection from spawnPt for globalParameters.EGO_INIT_DIST,
     with blueprint MODEL,
     with behavior EgoBehavior()
 
