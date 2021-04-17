@@ -22,7 +22,7 @@ MODEL = 'vehicle.lincoln.mkz2017'
 
 EGO_INIT_DIST = [20, 25]
 param EGO_SPEED = VerifaiRange(7, 10)
-param EGO_BRAKE = VerifaiRange(0.5, 1.0)
+EGO_BRAKE = 1.0
 
 ADV_INIT_DIST = [10, 15]
 param ADV_SPEED = VerifaiRange(7, 10)
@@ -39,7 +39,7 @@ behavior EgoBehavior(trajectory):
 	try:
 		do FollowTrajectoryBehavior(target_speed=globalParameters.EGO_SPEED, trajectory=trajectory)
 	interrupt when withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST):
-		take SetBrakeAction(globalParameters.EGO_BRAKE)
+		take SetBrakeAction(EGO_BRAKE)
 	interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
 		terminate
 
