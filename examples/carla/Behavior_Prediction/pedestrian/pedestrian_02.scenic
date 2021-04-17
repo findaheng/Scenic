@@ -24,7 +24,7 @@ EGO_INIT_DIST = VerifaiRange(-30, -20)
 EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = 1.0
 
-ADV_INIT_DIST = VerifaiRange(-30, -20)
+ADV_INIT_DIST = VerifaiRange(60, 20)
 ADV_SPEED = VerifaiRange(7, 10)
 ADV_BRAKE = 1.0
 
@@ -55,9 +55,10 @@ behavior AdvBehavior():
 # SPATIAL RELATIONS             #
 #################################
 
-road = Uniform(*filter(lambda r: len(r.forwardLanes) == len(r.backwardLanes) == 1, network.roads))
-egoLane = Uniform(road.forwardLanes)
+road = Uniform(*filter(lambda r: len(r.forwardLanes.lanes) == len(r.backwardLanes.lanes) == 1, network.roads))
+egoLane = Uniform(road.forwardLanes.lanes)[0]
 spawnPt = OrientedPoint on egoLane.centerline
+advSpawnPt = OrientedPoint following roadDirection from spawnPt for ADV_INIT_DIST
 
 #################################
 # SCENARIO SPECIFICATION        #
@@ -72,8 +73,9 @@ ped = Pedestrian right of spawnPt by 3,
     with regionContainedIn None,
     with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
 
-adv = Car following roadDirection from (left of spawnPt by 3) for ADV_INIT_DIST,
+adv = Car left of advSpawnPt by 3,
     with blueprint MODEL,
+    with heading 180 deg relative to spawnPt.heading,
     with behavior AdvBehavior()
 
 require (distance from spawnPt to intersection) > BUFFER_DIST
