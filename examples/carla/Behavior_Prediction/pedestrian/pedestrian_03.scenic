@@ -23,14 +23,13 @@ MODEL = 'vehicle.lincoln.mkz2017'
 
 EGO_INIT_DIST = [20, 25]
 param EGO_SPEED = VerifaiRange(7, 10)
-param EGO_BRAKE = VerifaiRange(0.5, 1.0)
+EGO_BRAKE = 1.0
 
-ADV_INIT_DIST = [15, 20]
-param ADV_SPEED = VerifaiRange(7, 10)
+PED_MIN_SPEED = 1.0
+PED_THRESHOLD = 20
 
-param SAFETY_DIST = VerifaiRange(10, 20)
-CRASH_DIST = 5
-TERM_DIST = 70
+param SAFETY_DIST = VerifaiRange(10, 15)
+TERM_DIST = 50
 
 #################################
 # AGENT BEHAVIORS               #
@@ -40,7 +39,7 @@ behavior EgoBehavior(trajectory):
 	try:
 		do FollowTrajectoryBehavior(target_speed=globalParameters.EGO_SPEED, trajectory=trajectory)
 	interrupt when withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST):
-		take SetBrakeAction(globalParameters.EGO_BRAKE)
+		take SetBrakeAction(EGO_BRAKE)
 	interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
 		terminate
 
@@ -48,20 +47,16 @@ behavior EgoBehavior(trajectory):
 # SPATIAL RELATIONS             #
 #################################
 
-intersection = Uniform(*filter(lambda i: i.is4Way, network.intersections))
+intersection = Uniform(*filter(lambda i: i.is4Way or i.is3Way and len(i.crossings) > 0, network.intersections))
 
-egoInitLane = Uniform(*intersection.incomingLanes)
-egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoInitLane.maneuvers))
+egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.LEFT_TURN, intersection.maneuvers))
+egoInitLane = egoManeuver.startLane
 egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint in egoInitLane.centerline
 
-advInitLane = Uniform(*filter(lambda m:
-		m.type is ManeuverType.STRAIGHT,
-		egoManeuver.reverseManeuvers)
-	).startLane
-advManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.LEFT_TURN, advInitLane.maneuvers))
-advTrajectory = [advInitLane, advManeuver.connectingLane, advManeuver.endLane]
-advSpawnPt = OrientedPoint in advInitLane.centerline
+tempManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.RIGHT_TURN, egoManeuver.reverseManeuvers))
+tempInitLane = tempManeuver.startLane
+tempSpawnPt = tempInitLane.centerline[0]
 
 #################################
 # SCENARIO SPECIFICATION        #
@@ -71,10 +66,10 @@ ego = Car at egoSpawnPt,
 	with blueprint MODEL,
 	with behavior EgoBehavior(egoTrajectory)
 
-adversary = Car at advSpawnPt,
-	with blueprint MODEL,
-	with behavior FollowTrajectoryBehavior(target_speed=globalParameters.ADV_SPEED, trajectory=advTrajectory)
+ped = Pedestrian right of tempSpawnPt by 3,
+	with heading 90 deg relative to tempSpawnPt.heading,
+	with regionContainedIn None,
+	with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
 
 require EGO_INIT_DIST[0] <= (distance to intersection) <= EGO_INIT_DIST[1]
-require ADV_INIT_DIST[0] <= (distance from adversary to intersection) <= ADV_INIT_DIST[1]
 terminate when (distance to egoSpawnPt) > TERM_DIST
