@@ -39,7 +39,7 @@ behavior EgoBehavior(trajectory):
     flag = True
     try:
         do FollowTrajectoryBehavior(target_speed=globalParameters.EGO_SPEED, trajectory=trajectory)
-    interrupt when withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST) and flag:
+    interrupt when withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST) and (ped in network.drivableRegion) and flag:
         flag = False
         while withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST + 3):
             take SetBrakeAction(EGO_BRAKE)

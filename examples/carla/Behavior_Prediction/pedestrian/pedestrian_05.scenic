@@ -38,7 +38,7 @@ TERM_DIST = 50
 behavior EgoBehavior(trajectory):
     try:
         do FollowTrajectoryBehavior(target_speed=globalParameters.EGO_SPEED, trajectory=trajectory)
-    interrupt when withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST):
+    interrupt when withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST) and (ped in network.drivableRegion):
         take SetBrakeAction(EGO_BRAKE)
     interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
         terminate
