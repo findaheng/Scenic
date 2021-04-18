@@ -5,6 +5,8 @@ DESCRIPTION: Ego vehicle makes a right turn at an intersection and must yield wh
 SOURCE: Carla Challenge, #04
 """
 
+import random
+
 #################################
 # MAP AND MODEL                 #
 #################################
@@ -23,6 +25,7 @@ EGO_INIT_DIST = [20, 25]
 param EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = 1.0
 
+param ADD_PEDS = random.randint(0, 2)
 PED_MIN_SPEED = 1.0
 PED_THRESHOLD = 20
 
@@ -70,6 +73,12 @@ ped = Pedestrian right of tempSpawnPt by 3,
     with heading ego.heading,
     with regionContainedIn None,
     with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
+
+for i in range(globalParameters.ADD_PEDS):
+    Pedestrian right of ped by 1 + i,
+        with heading ped.heading,
+        with regionContainedIn None,
+        with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
 
 require EGO_INIT_DIST[0] <= (distance to intersection) <= EGO_INIT_DIST[1]
 terminate when (distance to egoSpawnPt) > TERM_DIST
