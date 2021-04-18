@@ -29,6 +29,7 @@ PED_MIN_SPEED = 1.0
 PED_THRESHOLD = 20
 
 param SAFETY_DIST = VerifaiRange(10, 15)
+CRASH_DIST = 5
 TERM_DIST = 50
 
 #################################
@@ -56,7 +57,7 @@ egoSpawnPt = OrientedPoint in egoInitLane.centerline
 
 tempManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.RIGHT_TURN, egoManeuver.reverseManeuvers))
 tempInitLane = tempManeuver.startLane
-tempSpawnPt = tempInitLane.centerline[0]
+tempSpawnPt = tempInitLane.centerline[-1]
 
 #################################
 # SCENARIO SPECIFICATION        #
@@ -67,7 +68,7 @@ ego = Car at egoSpawnPt,
 	with behavior EgoBehavior(egoTrajectory)
 
 ped = Pedestrian right of tempSpawnPt by 3,
-	with heading 90 deg relative to tempSpawnPt.heading,
+	with heading ego.heading,
 	with regionContainedIn None,
 	with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
 
