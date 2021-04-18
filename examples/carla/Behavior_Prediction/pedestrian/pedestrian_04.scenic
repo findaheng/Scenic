@@ -35,10 +35,13 @@ TERM_DIST = 50
 #################################
 
 behavior EgoBehavior(trajectory):
+	flag = True
 	try:
 		do FollowTrajectoryBehavior(target_speed=globalParameters.EGO_SPEED, trajectory=trajectory)
-	interrupt when withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST):
-		take SetBrakeAction(EGO_BRAKE)
+	interrupt when withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST) and flag:
+		flag = False
+		while withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST):
+			take SetBrakeAction(EGO_BRAKE)
 	interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
 		terminate
 
