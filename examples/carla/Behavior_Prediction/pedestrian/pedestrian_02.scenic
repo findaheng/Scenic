@@ -24,7 +24,7 @@ param EGO_INIT_DIST = VerifaiRange(-30, -20)
 param EGO_SPEED = VerifaiRange(7, 10)
 EGO_BRAKE = 1.0
 
-param ADV_INIT_DIST = VerifaiRange(60, 20)
+param ADV_INIT_DIST = VerifaiRange(40, 50)
 param ADV_SPEED = VerifaiRange(7, 10)
 ADV_BRAKE = 1.0
 
@@ -51,7 +51,7 @@ behavior EgoBehavior():
 behavior AdvBehavior():
     try:
         do FollowLaneBehavior(target_speed=globalParameters.ADV_SPEED)
-    interrupt when withinDistanceToObjsInLane(self, globalParameters.SAFETY_DIST) and (ped in network.drivableRegion):
+    interrupt when withinDistanceToObjsInLane(self, globalParameters.SAFETY_DIST) and (distance from adv to ped) < (self, globalParameters.SAFETY_DIST) and (ped in network.drivableRegion):
         take SetBrakeAction(ADV_BRAKE)
     interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
         terminate
