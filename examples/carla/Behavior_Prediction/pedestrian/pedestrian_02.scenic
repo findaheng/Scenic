@@ -63,7 +63,7 @@ behavior AdvBehavior():
 road = Uniform(*filter(lambda r: len(r.forwardLanes.lanes) == len(r.backwardLanes.lanes) == 1, network.roads))
 egoLane = Uniform(road.forwardLanes.lanes)[0]
 spawnPt = OrientedPoint on egoLane.centerline
-advSpawnPt = OrientedPoint following roadDirection from spawnPt for globalParameters.ADV_INIT_DIST + globalParameters.ADD_PEDS
+advSpawnPt = OrientedPoint following roadDirection from spawnPt for globalParameters.ADV_INIT_DIST
 
 #################################
 # SCENARIO SPECIFICATION        #
