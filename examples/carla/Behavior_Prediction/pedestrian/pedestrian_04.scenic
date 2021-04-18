@@ -35,15 +35,15 @@ TERM_DIST = 50
 #################################
 
 behavior EgoBehavior(trajectory):
-	flag = True
-	try:
-		do FollowTrajectoryBehavior(target_speed=globalParameters.EGO_SPEED, trajectory=trajectory)
-	interrupt when withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST) and flag:
-		flag = False
-		while withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST):
-			take SetBrakeAction(EGO_BRAKE)
-	interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
-		terminate
+    flag = True
+    try:
+        do FollowTrajectoryBehavior(target_speed=globalParameters.EGO_SPEED, trajectory=trajectory)
+    interrupt when withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST) and flag:
+        flag = False
+        while withinDistanceToAnyObjs(self, globalParameters.SAFETY_DIST + 3):
+            take SetBrakeAction(EGO_BRAKE)
+    interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
+        terminate
 
 #################################
 # SPATIAL RELATIONS             #
@@ -63,13 +63,13 @@ tempSpawnPt = egoInitLane.centerline[-1]
 #################################
 
 ego = Car at egoSpawnPt,
-	with blueprint MODEL,
-	with behavior EgoBehavior(egoTrajectory)
+    with blueprint MODEL,
+    with behavior EgoBehavior(egoTrajectory)
 
 ped = Pedestrian right of tempSpawnPt by 3,
-	with heading ego.heading,
-	with regionContainedIn None,
-	with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
+    with heading ego.heading,
+    with regionContainedIn None,
+    with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
 
 require EGO_INIT_DIST[0] <= (distance to intersection) <= EGO_INIT_DIST[1]
 terminate when (distance to egoSpawnPt) > TERM_DIST

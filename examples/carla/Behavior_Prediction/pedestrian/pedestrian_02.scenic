@@ -1,7 +1,7 @@
 """
 TITLE: Behavior Prediction - Pedestrian 02
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: Both ego and adversary vehicles must stop suddenly to avoid 
+DESCRIPTION: Both ego and adversary vehicles must suddenly stop to avoid 
 collision when pedestrian crosses the road unexpectedly.
 SOURCE: Carla Challenge, #03
 """
@@ -33,6 +33,7 @@ PED_THRESHOLD = 20
 
 param SAFETY_DIST = VerifaiRange(10, 15)
 BUFFER_DIST = 75
+CRASH_DIST = 5
 TERM_DIST = 50
 
 #################################
@@ -44,12 +45,16 @@ behavior EgoBehavior():
         do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
     interrupt when withinDistanceToObjsInLane(self, globalParameters.SAFETY_DIST):
         take SetBrakeAction(EGO_BRAKE)
+    interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
+        terminate
 
 behavior AdvBehavior():
     try:
         do FollowLaneBehavior(target_speed=globalParameters.ADV_SPEED)
     interrupt when withinDistanceToObjsInLane(self, globalParameters.SAFETY_DIST):
         take SetBrakeAction(ADV_BRAKE)
+    interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
+        terminate
 
 #################################
 # SPATIAL RELATIONS             #
