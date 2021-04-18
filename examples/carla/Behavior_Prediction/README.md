@@ -49,5 +49,5 @@ For questions and concerns, please contact Francis Indaheng at findaheng@berkele
 02. Both ego and adversary vehicles must suddenly stop to avoid collision when pedestrian crosses the road unexpectedly.
 03. Ego vehicle makes a left turn at an intersection and must suddenly stop to avoid collision when pedestrian crosses the crosswalk.
 04. Ego vehicle makes a right turn at an intersection and must yield when pedestrian crosses the crosswalk.
-05. (DIP)
+05. Ego vehicle goes straight at an intersection and must yield when pedestrian crosses the crosswalk.
 

@@ -6,8 +6,6 @@ collision when pedestrian crosses the road unexpectedly.
 SOURCE: Carla Challenge, #03
 """
 
-import random
-
 #################################
 # MAP AND MODEL                 #
 #################################
@@ -30,7 +28,6 @@ param ADV_INIT_DIST = VerifaiRange(60, 20)
 param ADV_SPEED = VerifaiRange(7, 10)
 ADV_BRAKE = 1.0
 
-param ADD_PEDS = random.randint(0, 2)
 PED_MIN_SPEED = 1.0
 PED_THRESHOLD = 20
 
@@ -80,12 +77,6 @@ ped = Pedestrian right of spawnPt by 3,
     with heading 90 deg relative to spawnPt.heading,
     with regionContainedIn None,
     with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
-
-for i in range(globalParameters.ADD_PEDS):
-    Pedestrian right of ped by 1 + i,
-        with heading ped.heading,
-        with regionContainedIn None,
-        with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
 
 adv = Car left of advSpawnPt by 3,
     with blueprint MODEL,
