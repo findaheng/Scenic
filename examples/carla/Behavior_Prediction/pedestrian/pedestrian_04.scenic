@@ -67,7 +67,7 @@ ego = Car at egoSpawnPt,
     with blueprint MODEL,
     with behavior EgoBehavior(egoTrajectory)
 
-ped = Pedestrian right of tempSpawnPt by 3,
+ped = Pedestrian right of tempSpawnPt by 5,
     with heading ego.heading,
     with regionContainedIn None,
     with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
