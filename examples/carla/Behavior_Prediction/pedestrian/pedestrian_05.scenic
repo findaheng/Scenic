@@ -55,10 +55,8 @@ egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 egoSpawnPt = OrientedPoint in egoInitLane.centerline
 
 tempManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoManeuver.reverseManeuvers))
-tempInitLaneSec = tempManeuver.startLane.sections[-1]
-while tempInitLaneSec._laneToRight is not None:
-    tempInitLaneSec = tempInitLaneSec.laneToRight
-tempSpawnPt = tempInitLaneSec.centerline[-1]
+tempInitLane = tempManeuver.startLane
+tempSpawnPt = tempInitLane.centerline[-1]
 
 #################################
 # SCENARIO SPECIFICATION        #
