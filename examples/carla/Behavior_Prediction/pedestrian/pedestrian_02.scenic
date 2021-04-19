@@ -51,7 +51,7 @@ behavior EgoBehavior():
 behavior AdvBehavior():
     try:
         do FollowLaneBehavior(target_speed=globalParameters.ADV_SPEED)
-    interrupt when withinDistanceToObjsInLane(self, globalParameters.SAFETY_DIST) and (distance from adv to ped) < (self, globalParameters.SAFETY_DIST) and (ped in network.drivableRegion):
+    interrupt when (withinDistanceToObjsInLane(self, globalParameters.SAFETY_DIST) or (distance from adv to ped) < 10) and (ped in network.drivableRegion):
         take SetBrakeAction(ADV_BRAKE)
     interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
         terminate
