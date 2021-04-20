@@ -16,39 +16,10 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
-MODEL = 'vehicle.lincoln.mkz2017'
+param EGO_SPEED = VerifaiRange(5, 10)
+param ADV_SPEED = VerifaiRange(5, 10)
 
-param EGO_SPEED = VerifaiRange(7, 10)
-
-param ADV_DIST = VerifaiRange(10, 25)
-param ADV_SPEED = VerifaiRange(2, 4)
-
-BYPASS_DIST = [15, 10]
 INIT_DIST = 50
-TERM_TIME = 5
-
-#################################
-# AGENT BEHAVIORS               #
-#################################
-
-behavior EgoBehavior():
-	try:
-		do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
-	interrupt when withinDistanceToAnyObjs(self, BYPASS_DIST[0]):
-		fasterLaneSec = self.laneSection.fasterLane
-		do LaneChangeBehavior(
-				laneSectionToSwitch=fasterLaneSec,
-				target_speed=globalParameters.EGO_SPEED)
-		do FollowLaneBehavior(
-				target_speed=globalParameters.EGO_SPEED,
-				laneToFollow=fasterLaneSec.lane) \
-			until (distance to adversary) > BYPASS_DIST[1]
-		slowerLaneSec = self.laneSection.slowerLane
-		do LaneChangeBehavior(
-				laneSectionToSwitch=slowerLaneSec,
-				target_speed=globalParameters.EGO_SPEED)
-		do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED) for TERM_TIME seconds
-		terminate 
 
 #################################
 # SPATIAL RELATIONS             #
@@ -61,11 +32,13 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car at egoSpawnPt,
+ego = Car following roadDirection from egoSpawnPt by -INIT_DIST,
+	with FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
 
-adversary = Car following roadDirection for 10,
-	facing ego
+adversary = Car right of egoSpawnPt by 2,
+	facing toward ego,
+	with speed globalParameters.ADV_SPEED
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
-require always (adversary.laneSection._fasterLane is not None)
+require always (ego.laneSection._fasterLane is not None)
