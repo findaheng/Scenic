@@ -10,7 +10,7 @@ For questions and concerns, please contact Francis Indaheng at findaheng@berkele
 > - TIP => Testing in-progress
 
 01. (DIP) Perform lane change/low-speed merge
-02. (TIP) Perform vehicle following
+02. Perform vehicle following
 03. (DIP) Move out of travel lane/park
 04. (DIP) Detect and respond to school buses
 05. (TIP) Detect and respond to encroaching oncoming vehicles
