@@ -8,7 +8,7 @@ DESCRIPTION: Detect and respond to pedestrians
 # MAP AND MODEL                 #
 #################################
 
-param map = localPath('../../../../tests/formats/opendrive/maps/CARLA/Town01.xodr')
+param map = localPath('../../../tests/formats/opendrive/maps/CARLA/Town01.xodr')
 param carla_map = 'Town01'
 model scenic.simulators.carla.model
 

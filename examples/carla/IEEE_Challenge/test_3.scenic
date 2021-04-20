@@ -8,7 +8,7 @@ DESCRIPTION: Move out of travel lane/park
 # MAP AND MODEL                 #
 #################################
 
-param map = localPath('../../../../tests/formats/opendrive/maps/CARLA/Town03.xodr')
+param map = localPath('../../../tests/formats/opendrive/maps/CARLA/Town03.xodr')
 param carla_map = 'Town03'
 model scenic.simulators.carla.model
 
