@@ -13,5 +13,5 @@ For questions and concerns, please contact Francis Indaheng at findaheng@berkele
 02. (TIP) Perform vehicle following
 03. (DIP) Move out of travel lane/park
 04. (DIP) Detect and respond to school buses
-05. (DIP) Detect and respond to encroaching oncoming vehicles
+05. (TIP) Detect and respond to encroaching oncoming vehicles
 06. Detect and respond to pedestrians

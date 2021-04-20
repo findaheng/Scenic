@@ -20,7 +20,7 @@ param LEAD_DIST = VerifaiRange(10, 20)
 param LEAD_SPEED = VerifaiRange(2, 7)
 
 INIT_DIST = 50
-TERM_TIME = 5
+TERM_DIST = 70
 
 #################################
 # SPATIAL RELATIONS             #
@@ -40,3 +40,4 @@ adversary = Car following roadDirection for globalParameters.LEAD_DIST,
 	with behavior FollowLaneBehavior(target_speed=globalParameters.LEAD_SPEED)
 
 require (distance to intersection) > INIT_DIST
+terminate when (distance to egoSpawnPt) > TERM_DIST

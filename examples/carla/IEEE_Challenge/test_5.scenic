@@ -20,6 +20,7 @@ param EGO_SPEED = VerifaiRange(5, 10)
 param ADV_SPEED = VerifaiRange(5, 10)
 
 INIT_DIST = 50
+TERM_DIST = 70
 
 #################################
 # SPATIAL RELATIONS             #
@@ -42,3 +43,4 @@ adversary = Car right of egoSpawnPt by 2,
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
 require always (ego.laneSection._fasterLane is not None)
+terminate when (distance to egoSpawnPt) + INIT_DIST > TERM_DIST
