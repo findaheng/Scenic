@@ -62,12 +62,9 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 #################################
 
 ego = Car at egoSpawnPt,
-	with blueprint MODEL,
-	with behavior EgoBehavior()
 
-adversary = Car following roadDirection for globalParameters.ADV_DIST,
-	with blueprint MODEL,
-	with behavior FollowLaneBehavior(target_speed=globalParameters.ADV_SPEED)
+adversary = Car following roadDirection for 10,
+	facing ego
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
