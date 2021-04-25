@@ -44,7 +44,7 @@ behavior IntersectionBehavior(trajectory, speed, safetyDist, brake):
 intersection = Uniform(*filter(lambda i: i.is4Way, network.intersections))
 
 egoInitLane = Uniform(*intersection.incomingLanes)
-egoManeuver = Uniform(egoInitLane.maneuvers)
+egoManeuver = Uniform(*egoInitLane.maneuvers)
 egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 
 #################################
