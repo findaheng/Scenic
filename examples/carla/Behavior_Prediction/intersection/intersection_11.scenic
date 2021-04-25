@@ -27,8 +27,6 @@ param OTHER_SPEEDS = [VerifaiRange(7, 10) for _ in range(N)]
 param OTHER_SAFETY_DISTS = [VerifaiRange(10, 20) for _ in range(N)]
 param OTHER_BRAKES = [VerifaiRange(0.5, 1.0) for _ in range(N)]
 
-TERM_DIST = 70
-
 #################################
 # AGENT BEHAVIORS               #
 #################################
