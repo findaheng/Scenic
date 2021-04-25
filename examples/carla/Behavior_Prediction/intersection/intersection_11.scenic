@@ -52,7 +52,7 @@ egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 #################################
 
 ego = Car on egoInitLane,
-	with behavior IntersectionBehavior(egoTrajectory, globalParameters.EGO_SPEED, globalParameters.EGO_SAFETY_DIST, globalParameters.EGO_BRAKE)
+	with behavior IntersectionBehavior(egoTrajectory, globalParameters.EGO_SPEED, globalParameters.EGO_SAFETY_DIST, EGO_BRAKE)
 
 for i in range(globalParameters.N):
 	tempInitLane = Uniform(*intersection.incomingLanes)
