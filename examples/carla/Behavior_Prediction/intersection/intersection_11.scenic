@@ -23,9 +23,9 @@ param EGO_SPEED = VerifaiRange(7, 10)
 param EGO_SAFETY_DIST = VerifaiRange(10, 20)
 param EGO_BRAKE = VerifaiRange(0.5, 1.0)
 
-param OTHER_SPEEDS = [VerifaiRange(7, 10) for _ in range(N)]
-param OTHER_SAFETY_DISTS = [VerifaiRange(10, 20) for _ in range(N)]
-param OTHER_BRAKES = [VerifaiRange(0.5, 1.0) for _ in range(N)]
+param OTHER_SPEEDS = [VerifaiRange(7, 10) for _ in range(globalParameters.N)]
+param OTHER_SAFETY_DISTS = [VerifaiRange(10, 20) for _ in range(globalParameters.N)]
+param OTHER_BRAKES = [VerifaiRange(0.5, 1.0) for _ in range(globalParameters.N)]
 
 #################################
 # AGENT BEHAVIORS               #
@@ -51,10 +51,12 @@ egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car on egoInitLane with behavior IntersectionBehavior(egoTrajectory, EGO_SPEED, EGO_SAFETY_DIST, EGO_BRAKE)
+ego = Car on egoInitLane,
+	with behavior IntersectionBehavior(egoTrajectory, globalParameters.EGO_SPEED, globalParameters.EGO_SAFETY_DIST, globalParameters.EGO_BRAKE)
 
-for i in range(N):
+for i in range(globalParameters.N):
 	tempInitLane = Uniform(*intersection.incomingLanes)
 	tempManeuver = Uniform(*tempInitLane.maneuvers)
 	tempTrajectory = [tempInitLane, tempManeuver.connectingLane, tempManeuver.endLane]
-	Car on tempInitLane with behavior IntersectionBehavior(tempTrajectory, OTHER_SPEEDS[i], OTHER_SAFETY_DISTS[i], OTHER_BRAKES[i])
+	Car on tempInitLane,
+		with behavior IntersectionBehavior(tempTrajectory, globalParameters.OTHER_SPEEDS[i], globalParameters.OTHER_SAFETY_DISTS[i], globalParameters.OTHER_BRAKES[i])
