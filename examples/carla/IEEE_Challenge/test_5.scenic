@@ -45,7 +45,7 @@ ego = Car following roadDirection from egoSpawnPt by -INIT_DIST,
 
 adversary = Car right of egoSpawnPt by 2,
 	facing toward ego,
-	with behavior DriveForwardBehavior(ADV_THROTTLE)
+	with behavior DriveForwardBehavior(globalParameters.ADV_THROTTLE)
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
