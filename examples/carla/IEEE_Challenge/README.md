@@ -11,7 +11,7 @@ For questions and concerns, please contact Francis Indaheng at findaheng@berkele
 
 01. (DIP) Perform lane change/low-speed merge
 02. Perform vehicle following
-03. (DIP) Move out of travel lane/park
-04. (DIP) Detect and respond to school buses
-05. (TIP) Detect and respond to encroaching oncoming vehicles
+03. Move out of travel lane/park
+04. (TIP) Detect and respond to school buses
+05. Detect and respond to encroaching oncoming vehicles
 06. Detect and respond to pedestrians
