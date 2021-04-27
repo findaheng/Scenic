@@ -16,8 +16,9 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
-param IS_RIGHT = VerifaiDiscreteRange(0, 1)
+MODEL = 'vehicle.lincoln.mkz2017'  # set to bus in LGSVL
 
+EGO_OFFSET = 10
 param EGO_SPEED = VerifaiRange(5, 10)
 
 INIT_DIST = 50
@@ -34,12 +35,12 @@ spawnPt = OrientedPoint in initLane.centerline
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car behind spawnPt by 10,
+ego = Car behind spawnPt by EGO_OFFSET,
 	with behavior FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
 
-bus = Car (right of spawnPt by 3) if globalParameters.IS_RIGHT == 1 else (left of spawnPt by 3)
+bus = Car right of spawnPt by 3
 
 require (distance to intersection) > INIT_DIST
 require always (ego.laneSection._fasterLane is None)
 require always (ego.laneSection._slowerLane is not None)
-terminate when (distance to spawnPt) > TERM_DIST
+terminate when (distance to spawnPt) - EGO_OFFSET > TERM_DIST
