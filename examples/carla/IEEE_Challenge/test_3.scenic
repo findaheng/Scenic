@@ -16,14 +16,6 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
-MODEL = 'vehicle.lincoln.mkz2017'
-
-param EGO_SPEED = VerifaiRange(7, 10)
-
-param ADV_DIST = VerifaiRange(10, 25)
-param ADV_SPEED = VerifaiRange(2, 4)
-
-BYPASS_DIST = [15, 10]
 INIT_DIST = 50
 TERM_TIME = 5
 
@@ -55,20 +47,19 @@ behavior EgoBehavior():
 #################################
 
 initLane = Uniform(*network.lanes)
-egoSpawnPt = OrientedPoint in initLane.centerline
+npcSpawnPt = OrientedPoint in initLane.centerline
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car at egoSpawnPt,
-	with blueprint MODEL,
-	with behavior EgoBehavior()
+ego = Car left of npcSpawnPt by 2
 
-adversary = Car following roadDirection for globalParameters.ADV_DIST,
-	with blueprint MODEL,
-	with behavior FollowLaneBehavior(target_speed=globalParameters.ADV_SPEED)
+npc = Car at npcSpawnPt
+npc_2 = Car ahead of npc by 2
+npc_3 = Car behind npc by 10
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
-require always (adversary.laneSection._fasterLane is not None)
+require always (npc.laneSection._laneToRight is None)
+require always (npc.laneSection._laneToLeft is not None)

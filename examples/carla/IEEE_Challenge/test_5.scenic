@@ -17,10 +17,12 @@ model scenic.simulators.carla.model
 #################################
 
 param EGO_SPEED = VerifaiRange(5, 10)
+
 param ADV_THROTTLE = VerifaiRange(0.5, 1.0)
+param ADV_OFFSET = VerifaiRange(1, 2)
 
 INIT_DIST = 50
-CRASH_DIST = 6
+CRASH_DIST = 15
 TERM_DIST = 70
 
 #################################
@@ -31,9 +33,6 @@ behavior EgoBehavior(speed):
 	try:
 		do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
 	interrupt when (distance to adversary) < CRASH_DIST:
-		take SetBrakeAction(1.0)
-		for _ in range(10):
-			wait
 		terminate
 
 behavior DriveForwardBehavior(throttle):
@@ -56,11 +55,11 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 ego = Car following roadDirection from egoSpawnPt by -INIT_DIST,
 	with behavior FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
 
-adversary = Car right of egoSpawnPt by 2,
+adversary = Car right of egoSpawnPt by globalParameters.ADV_OFFSET,
 	facing toward ego,
 	with behavior DriveForwardBehavior(globalParameters.ADV_THROTTLE)
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
 require always (ego.laneSection._fasterLane is not None)
-terminate when (distance to egoSpawnPt) + INIT_DIST > TERM_DIST
+terminate when (distance to adversary) > TERM_DIST
