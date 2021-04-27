@@ -20,14 +20,27 @@ param EGO_SPEED = VerifaiRange(5, 10)
 param ADV_THROTTLE = VerifaiRange(0.5, 1.0)
 
 INIT_DIST = 50
+CRASH_DIST = 6
 TERM_DIST = 70
 
 #################################
 # AGENT BEHAVIORS               #
 #################################
 
+behavior EgoBehavior(speed):
+	try:
+		do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
+	interrupt when (distance to adversary) < CRASH_DIST:
+		take SetBrakeAction(1.0)
+		for _ in range(10):
+			wait
+		terminate
+
 behavior DriveForwardBehavior(throttle):
-	take SetThrottleAction(throttle)
+	try:
+		take SetThrottleAction(throttle)
+	intersection when (distance from adversary to ego) < CRASH_DIST:
+		take SetBrakeAction(1.0)
 
 #################################
 # SPATIAL RELATIONS             #
