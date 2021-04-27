@@ -39,7 +39,7 @@ behavior EgoBehavior(speed):
 behavior DriveForwardBehavior(throttle):
 	try:
 		take SetThrottleAction(throttle)
-	intersection when (distance from adversary to ego) < CRASH_DIST:
+	interrupt when (distance from adversary to ego) < CRASH_DIST:
 		take SetBrakeAction(1.0)
 
 #################################
