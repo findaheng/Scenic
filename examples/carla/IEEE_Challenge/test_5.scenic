@@ -17,10 +17,17 @@ model scenic.simulators.carla.model
 #################################
 
 param EGO_SPEED = VerifaiRange(5, 10)
-param ADV_SPEED = VerifaiRange(5, 10)
+param ADV_THROTTLE = VerifaiRange(0.5, 1.0)
 
 INIT_DIST = 50
 TERM_DIST = 70
+
+#################################
+# AGENT BEHAVIORS               #
+#################################
+
+behavior DriveForwardBehavior(throttle):
+	take SetThrottleAction(throttle)
 
 #################################
 # SPATIAL RELATIONS             #
@@ -34,11 +41,11 @@ egoSpawnPt = OrientedPoint in initLane.centerline
 #################################
 
 ego = Car following roadDirection from egoSpawnPt by -INIT_DIST,
-	with FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
+	with behavior FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
 
 adversary = Car right of egoSpawnPt by 2,
 	facing toward ego,
-	with speed globalParameters.ADV_SPEED
+	with behavior DriveForwardBehavior(ADV_THROTTLE)
 
 require (distance to intersection) > INIT_DIST
 require (distance from adversary to intersection) > INIT_DIST
