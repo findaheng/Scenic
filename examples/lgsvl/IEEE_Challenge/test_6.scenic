@@ -42,6 +42,8 @@ behavior PedBehavior(midPt, endPt):
 
 refPt = OrientedPoint in Uniform(*network.lanes).centerline
 egoEndPt = OrientedPoint following roadDirection from refPt for TERM_DIST
+pedMidPt = OrientedPoint left of refPt by 0,
+	with speed globalParameters.PED_SPEED
 pedEndPt = OrientedPoint left of refPt by globalParameters.PED_OFFSET,
     with speed globalParameters.PED_SPEED
 
@@ -55,7 +57,7 @@ ego = ApolloCar following roadDirection from refPt for globalParameters.EGO_OFFS
 ped = Pedestrian right of refPt by 3,
     with heading 90 deg relative to refPt.heading,
     with regionContainedIn None,
-    with behavior PedBehavior(refPt, pedEndPt)
+    with behavior PedBehavior(pedMidPt, pedEndPt)
 
 require (distance to intersection) > BUFFER_DIST
 require always (ego.laneSection._slowerLane is None)
