@@ -19,9 +19,10 @@ model scenic.simulators.lgsvl.model
 #################################
 
 param EGO_OFFSET = VerifaiRange(-30, -20)
-param PED_OFFSET = VerifaiRange(0, 6)
+param PED_OFFSET = VerifaiRange(3, 6)
 param PED_SPEED = VerifaiRange(1, 3)
-param PED_HESITATE = VerifaiRange(0, 3)
+param PED_INIT_HESITATE = VerifaiRange(10, 30)
+param PED_MID_HESITATE = VerifaiRange(10, 50)
 
 BUFFER_DIST = 75
 TERM_DIST = 50
@@ -31,9 +32,11 @@ TERM_DIST = 50
 #################################
 
 behavior PedBehavior(midPt, endPt):
+    while simulation().currentTime - currTime < globalParameters.PED_INIT_HESITATE:
+        wait
     take FollowWaypointsAction([midPt])
     currTime = simulation().currentTime
-    while simulation().currentTime - currTime < globalParameters.PED_HESITATE):
+    while simulation().currentTime - currTime < globalParameters.PED_MID_HESITATE:
         wait
     take FollowWaypointsAction([endPt])
 
