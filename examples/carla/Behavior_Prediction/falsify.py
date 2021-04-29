@@ -24,7 +24,8 @@ class ADE_FDE(multi_objective_monitor):
         self.thresholds = thresholds; assert len(thresholds) == self.num_objectives
         self.timepoint = timepoint; assert timepoint >= 20, 'Must allow at least 20 timesteps of past trajectories!'
 
-        def specification(traj):
+        def specification(simulation):
+            traj = simulation.result.trajectory
             num_agents = len(traj[0])
             hist_traj = traj[timepoint-20:timepoint]
             gt_traj = traj[timepoint:timepoint+15]
