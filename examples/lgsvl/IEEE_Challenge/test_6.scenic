@@ -33,7 +33,7 @@ TERM_DIST = 50
 behavior PedBehavior(midPt, endPt):
     take FollowWaypointsAction([midPt])
     currTime = simulation().currentTime
-    while simulation().currentTime - currTime < globalParameters.PED_HESITATE):
+    while simulation().currentTime - currTime < globalParameters.PED_HESITATE:
         wait
     take FollowWaypointsAction([endPt])
 
