@@ -25,7 +25,7 @@ class ADE_FDE(multi_objective_monitor):
         self.timepoint = timepoint; assert timepoint >= 20, 'Must allow at least 20 timesteps of past trajectories!'
 
         def specification(simulation):
-            traj = simulation.result.trajectory
+            traj = simulation.trajectory
             num_agents = len(traj[0])
             hist_traj = traj[timepoint-20:timepoint]
             gt_traj = traj[timepoint:timepoint+15]
@@ -56,9 +56,11 @@ class ADE_FDE(multi_objective_monitor):
             csvfile.close()
 
             # Run behavior prediction model
+            currDir = os.path.abspath(os.getcwd())
             os.chdir(model_path)
             subprocess.run(['python', 'preprocess_data.py', '-n', '1'])
             subprocess.run(['python', 'test.py', '-m', 'lanegcn', f'--weight={model_path}/36.000.ckpt', '--split=test', '--map_path=/home/carla_challenge/Desktop/francis/Scenic/tests/formats/opendrive/maps/CARLA/Town05.xodr', f'--worker_num={self.worker_num}'])
+            os.chdir(currDir)
 
             ADEs, FDEs = [], []
             for i in range(6):
@@ -108,17 +110,18 @@ def announce(message):
     print(border)
 
 def run_experiment(scenic_path, model_path, thresholds=None,
-                    sampler_type=None, parallel=False, headless=False,
+                    sampler_type=None, num_workers=1, headless=False,
                     output_dir='outputs', debug=False):
     announce(f'RUNNING SCENIC PROGRAM {scenic_path}')
     
+    parallel = num_workers > 1
     params = {'verifaiSamplerType': sampler_type} if sampler_type else {}
     params['render'] = not headless
     sampler = ScenicSampler.fromScenario(scenic_path, **params)
     falsifier_params = DotMap(
         n_iters=10,
         save_error_table=True,
-        save_safe_table=True,
+        save_safe_table=False,
         max_time=None,
     )
     server_options = DotMap(maxSteps=100, verbosity=0)
@@ -130,7 +133,7 @@ def run_experiment(scenic_path, model_path, thresholds=None,
     falsifier = falsifier_cls(sampler=sampler, falsifier_params=falsifier_params,
                                 server_class=ScenicServer, server_options=server_options,
                                 monitor=monitor, scenic_path=scenic_path,
-                                scenario_params=params)
+                                scenario_params=params, num_workers=num_workers)
     t0 = time.time()
     falsifier.run_falsifier()
     t = time.time() - t0
@@ -155,7 +158,7 @@ def run_experiment(scenic_path, model_path, thresholds=None,
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--path', '-p', type=str, default='/home/carla_challenge/Desktop/francis/Scenic/examples/carla/Behavior_Prediction/intersection/intersection_01.scenic', help='Path to Scenic program'
+        '--path', '-p', type=str, default='intersection/intersection_01.scenic', help='Path to Scenic program'
     )
     parser.add_argument(
         '--model', '-m', type=str, default='/home/carla_challenge/Desktop/francis/LaneGCN', help='Path to behavior prediction model'
@@ -167,7 +170,7 @@ if __name__ == '__main__':
         '--samplerType', '-s', type=str, default=None, help='verifaiSamplerType'
     )
     parser.add_argument(
-        '--parallel', action='store_true'
+        '--numWorkers', '-n', type=int, default=1, help='Number of parallel workers'
     )
     parser.add_argument(
         '--headless', action='store_true'
@@ -177,6 +180,7 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    falsifier = run_experiment(args.path, args.model,
+    path = '/home/carla_challenge/Desktop/francis/Scenic/examples/carla/Behavior_Prediction/' + args.path
+    falsifier = run_experiment(path, args.model,
         thresholds=tuple(args.threshold), sampler_type=args.samplerType,
-        parallel=args.parallel, headless=args.headless, debug=args.debug)
+        num_workers=args.numWorkers, headless=args.headless, debug=args.debug)
