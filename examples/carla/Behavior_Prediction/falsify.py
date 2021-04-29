@@ -177,5 +177,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     falsifier = run_experiment(args.path, args.model,
-        thresholds=args.thresholds, sampler_type=args.samplerType,
+        thresholds=tuple(args.threshold), sampler_type=args.samplerType,
         parallel=args.parallel, headless=args.headless, debug=args.debug)
