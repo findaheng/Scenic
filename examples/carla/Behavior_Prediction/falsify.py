@@ -124,7 +124,7 @@ def run_experiment(scenic_path, model_path, thresholds=None,
         save_safe_table=False,
         max_time=None,
     )
-    server_options = DotMap(maxSteps=100, verbosity=0)
+    server_options = DotMap(maxSteps=200, verbosity=0)
     monitor = ADE_FDE(model_path, thresholds=thresholds, worker_num=0, debug=debug) \
         if thresholds else \
         ADE_FDE(model_path, worker_num=0, debug=debug)
