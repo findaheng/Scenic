@@ -42,7 +42,7 @@ behavior PedBehavior(midPt, endPt):
 
 refPt = OrientedPoint in Uniform(*network.lanes).centerline
 egoEndPt = OrientedPoint following roadDirection from refPt for TERM_DIST
-pedEndPt = OrientedPoint left of refPt by PED_OFFSET,
+pedEndPt = OrientedPoint left of refPt by globalParameters.PED_OFFSET,
     with speed globalParameters.PED_SPEED
 
 #################################
