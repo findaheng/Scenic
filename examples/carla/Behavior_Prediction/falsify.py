@@ -33,8 +33,8 @@ class ADE_FDE(multi_objective_monitor):
             gt_len = len(gts)
             threshADE, threshFDE = self.thresholds
 
+            print(f'ADE Threshold: {threshADE}, FDE Threshold: {threshFDE}')
             if self.debug:
-                print(f'ADE Threshold: {threshADE}, FDE Threshold: {threshFDE}')
                 plt.plot([gt[-1][0] for gt in traj], [gt[-1][1] for gt in traj], color='black')
                 plt.plot([gt[-1][0] for gt in hist_traj], [gt[-1][1] for gt in hist_traj], color='blue')
                 plt.plot([gt[-1][0] for gt in gt_traj], [gt[-1][1] for gt in gt_traj], color='yellow')
@@ -88,8 +88,8 @@ class ADE_FDE(multi_objective_monitor):
                 ADEs.append(ADE)
                 FDEs.append(FDE)
 
+                print(f'ADE: {ADE}, FDE: {FDE}')
                 if self.debug:
-                    print(f'ADE: {ADE}, FDE: {FDE}')
                     p = pd.read_csv(f'{model_path}/results/lanegcn/predictions_{i}_0.csv')
                     plt.plot(p['X'], p['Y'], color='green')
 
@@ -121,7 +121,7 @@ def run_experiment(scenic_path, model_path, thresholds=None,
     falsifier_params = DotMap(
         n_iters=10,
         save_error_table=True,
-        save_safe_table=False,
+        save_safe_table=True,
         max_time=None,
     )
     server_options = DotMap(maxSteps=200, verbosity=0)
@@ -141,17 +141,26 @@ def run_experiment(scenic_path, model_path, thresholds=None,
     print(f'Number of counterexamples: {len(falsifier.error_table.table)}')
     print(f'Confidence interval: {falsifier.get_confidence_interval()}')
     
-    df = pd.concat([falsifier.error_table.table, falsifier.safe_table.table])
+    tables = []
+    if falsifier_params.save_error_table:
+        tables.append(falsifier.error_table.table)
+    if falsifier_params.save_error_table:
+        tables.append(falsifier.safe_table.table)
     root, _ = os.path.splitext(scenic_path)
-    outfile = root.split('/')[-1]
-    if parallel:
-        outfile += '_parallel'
-    if sampler_type:
-        outfile += f'_{sampler_type}'
-    outfile += '.csv'
-    outpath = os.path.join(output_dir, outfile)
-    announce(f'SAVING OUTPUT TO {outpath}')
-    df.to_csv(outpath)
+    for i, df in enumerate(tables):
+        outfile = root.split('/')[-1]
+        if parallel:
+            outfile += '_parallel'
+        if sampler_type:
+            outfile += f'_{sampler_type}'
+        if i == 0:
+            outfile += '_error'
+        else:
+            outfile += '_safe'
+        outfile += '.csv'
+        outpath = os.path.join(output_dir, outfile)
+        announce(f'SAVING OUTPUT TO {outpath}')
+        df.to_csv(outpath)
 
     return falsifier
 
