@@ -20,22 +20,7 @@ model scenic.simulators.carla.model
 param N = 5  # number of additional vehicles
 
 param EGO_SPEED = VerifaiRange(7, 10)
-param EGO_SAFETY_DIST = VerifaiRange(5, 10)
-EGO_BRAKE = 1.0
-
 param OTHER_SPEEDS = [VerifaiRange(7, 10) for _ in range(globalParameters.N)]
-param OTHER_SAFETY_DISTS = [VerifaiRange(10, 20) for _ in range(globalParameters.N)]
-OTHER_BRAKE = 1.0
-
-#################################
-# AGENT BEHAVIORS               #
-#################################
-
-behavior IntersectionBehavior(trajectory, speed, safetyDist, brake):
-	do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
-	# interrupt when withinDistanceToAnyObjs(self, safetyDist):
-        # pass
-		# take SetBrakeAction(brake)
 
 #################################
 # SPATIAL RELATIONS             #
@@ -52,11 +37,11 @@ egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 #################################
 
 ego = Car on egoInitLane,
-	with behavior IntersectionBehavior(egoTrajectory, globalParameters.EGO_SPEED, globalParameters.EGO_SAFETY_DIST, EGO_BRAKE)
+    with behavior FollowTrajectoryBehavior(target_speed=globalParameters.EGO_SPEED, trajectory=egoTrajectory)
 
 for i in range(globalParameters.N):
-	tempInitLane = Uniform(*intersection.incomingLanes)
-	tempManeuver = Uniform(*tempInitLane.maneuvers)
-	tempTrajectory = [tempInitLane, tempManeuver.connectingLane, tempManeuver.endLane]
-	Car on tempInitLane,
-		with behavior IntersectionBehavior(tempTrajectory, globalParameters.OTHER_SPEEDS[i], globalParameters.OTHER_SAFETY_DISTS[i], OTHER_BRAKE)
+    tempInitLane = Uniform(*intersection.incomingLanes)
+    tempManeuver = Uniform(*tempInitLane.maneuvers)
+    tempTrajectory = [tempInitLane, tempManeuver.connectingLane, tempManeuver.endLane]
+    Car on tempInitLane,
+        with behavior FollowTrajectoryBehavior(target_speed=globalParameters.OTHER_SPEEDS[i], trajectory=tempTrajectory)

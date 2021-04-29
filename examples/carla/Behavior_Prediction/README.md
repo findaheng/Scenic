@@ -1,6 +1,6 @@
 # Behavior Prediction Scenario Descriptions
 
-The following includes a library of 30 Scenic scripts written specifically for use with CARLA simulator.
+The following includes a library of SCENIC programs written for use with CARLA simulator.
 Scenarios were created primarily for the testing of behavior prediction models, though they may be used in general cases.
 Inspiration was drawn from multiple sources, including [NHSTA's Pre-Crash Scenarios](https://rosap.ntl.bts.gov/view/dot/41932/dot_41932_DS1.pdf), the [INTERACTION dataset](https://github.com/interaction-dataset/interaction-dataset), the [Argoverse Motion Forecasting dataset](https://www.argoverse.org/data.html#forecasting-link), and the [CARLA Autonomous Driving Challenge](https://leaderboard.carla.org/scenarios/).
 </br>
@@ -22,6 +22,7 @@ For questions and concerns, please contact Francis Indaheng at findaheng@berkele
 08. Ego vehicle goes straight at 3-way intersection and must suddenly stop to avoid collision when adversary vehicle makes a left turn.
 09. Ego vehicle makes a right turn at 3-way intersection while adversary vehicle from lateral lane goes straight.
 10. Ego Vehicle waits at 4-way intersection while adversary vehicle in adjacent lane passes before performing a lane change to bypass a stationary vehicle waiting to make a left turn.
+11. N vehicles approach an intersection and take a random maneuver.
 
 ## Bypassing
 01. Ego vehicle performs a lane change to bypass a slow adversary vehicle before returning to its original lane.
@@ -31,18 +32,11 @@ For questions and concerns, please contact Francis Indaheng at findaheng@berkele
 05. Ego vehicle performs multiple lane changes to bypass three slow adversary vehicles.
 
 ## Roundabout
-01. (DIP)
-02. (DIP)
-03. (DIP)
-04. (DIP)
-05. (DIP)
+01. N vehicles approach a roundabout and take a random maneuver.
 
 ## Merging
-01. (DIP)
-02. (DIP)
-03. (DIP)
-04. (DIP)
-05. (DIP)
+01. Ego vehicle attempts to merge between two vehicles in adjacent lane.
+02. Ego vehicle merges into merging lanes off highway.
 
 ## Pedestrian
 01. Ego vehicle must suddenly stop to avoid collision when pedestrian crosses the road unexpectedly.
