@@ -33,8 +33,8 @@ class ADE_FDE(multi_objective_monitor):
             gt_len = len(gts)
             threshADE, threshFDE = self.thresholds
 
-            print(f'ADE Threshold: {threshADE}, FDE Threshold: {threshFDE}')
             if self.debug:
+                print(f'ADE Threshold: {threshADE}, FDE Threshold: {threshFDE}')
                 plt.plot([gt[-1][0] for gt in traj], [gt[-1][1] for gt in traj], color='black')
                 plt.plot([gt[-1][0] for gt in hist_traj], [gt[-1][1] for gt in hist_traj], color='blue')
                 plt.plot([gt[-1][0] for gt in gt_traj], [gt[-1][1] for gt in gt_traj], color='yellow')
@@ -88,12 +88,13 @@ class ADE_FDE(multi_objective_monitor):
                 ADEs.append(ADE)
                 FDEs.append(FDE)
 
-                print(f'ADE: {ADE}, FDE: {FDE}')
                 if self.debug:
+                    print(f'ADE: {ADE}, FDE: {FDE}')
                     p = pd.read_csv(f'{model_path}/results/lanegcn/predictions_{i}_0.csv')
                     plt.plot(p['X'], p['Y'], color='green')
 
             minADE, minFDE = min(ADEs), min(FDEs)
+            print(f'minADE: {minADE}, minFDE: {minFDE}')
             rho = (threshADE - minADE, threshFDE - minFDE)
 
             if self.debug:
