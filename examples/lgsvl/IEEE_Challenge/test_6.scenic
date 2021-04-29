@@ -1,5 +1,5 @@
 """
-TITLE: IEEE Challenge - Test 5
+TITLE: IEEE Challenge - Test 6
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Detect and respond to pedestrians
 """
@@ -11,7 +11,6 @@ DESCRIPTION: Detect and respond to pedestrians
 param map = localPath('/home/scenic/Desktop/Carla/VerifiedAI/Scenic-devel/examples/lgsvl/maps/borregasave.xodr')
 param lgsvl_map = 'BorregasAve'
 param time_step = 1.0/10
-
 param apolloHDMap = 'Borregas Ave'
 model scenic.simulators.lgsvl.model
 
@@ -19,53 +18,45 @@ model scenic.simulators.lgsvl.model
 # CONSTANTS                     #
 #################################
 
-param EGO_INIT_DIST = VerifaiRange(-30, -20)
-param EGO_SPEED = VerifaiRange(7, 10)
-EGO_BRAKE = 1.0
+param EGO_OFFSET = VerifaiRange(-30, -20)
+param PED_OFFSET = VerifaiRange(0, 6)
+param PED_SPEED = VerifaiRange(1, 3)
+param PED_HESITATE = VerifaiRange(0, 30)
 
-PED_MIN_SPEED = 1.0
-PED_THRESHOLD = 20
-
-param SAFETY_DIST = VerifaiRange(10, 15)
 BUFFER_DIST = 75
-CRASH_DIST = 5
 TERM_DIST = 50
 
 #################################
 # AGENT BEHAVIORS               #
 #################################
 
-behavior EgoBehavior():
-    try:
-        do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
-    interrupt when withinDistanceToObjsInLane(self, globalParameters.SAFETY_DIST) and (ped in network.drivableRegion):
-        take SetBrakeAction(EGO_BRAKE)
-    interrupt when withinDistanceToAnyObjs(self, CRASH_DIST):
-        terminate
+behavior PedBehavior(midPt, endPt):
+    do FollowWaypoints([midPt])
+    while not withinDistanceToAnyObjs(self, globalParameters.PED_HESITATE):
+        wait
+    do FollowWaypoints([endPt])
 
 #################################
 # SPATIAL RELATIONS             #
 #################################
 
-lane = Uniform(*network.lanes)
-spawnPt = OrientedPoint in lane.centerline
-endPt = OrientedPoint following roadDirection from spawnPt for TERM_DIST
-pedEndPt = OrientedPoint left of spawnPt by VerifaiRange(0, 0),
-    with speed VerifaiRange(1, 3)
+refPt = OrientedPoint in Uniform(*network.lanes).centerline
+egoEndPt = OrientedPoint following roadDirection from refPt for TERM_DIST
+pedEndPt = OrientedPoint left of refPt by PED_OFFSET,
+    with speed globalParameters.PED_SPEED
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = ApolloCar following roadDirection from spawnPt for globalParameters.EGO_INIT_DIST,
-    with behavior DriveTo(endPt)
+ego = ApolloCar following roadDirection from refPt for globalParameters.EGO_OFFSET,
+    with behavior DriveTo(egoEndPt)
 
-ped = Pedestrian right of spawnPt by 3,
-    with heading 90 deg relative to spawnPt.heading,
+ped = Pedestrian right of refPt by 3,
+    with heading 90 deg relative to refPt.heading,
     with regionContainedIn None,
-    with behavior FollowWaypoints([pedEndPt])
+    with behavior PedBehavior(refPt, pedEndPt)
 
 require (distance to intersection) > BUFFER_DIST
 require always (ego.laneSection._slowerLane is None)
 require always (ego.laneSection._fasterLane is None)
-# terminate when (distance to spawnPt) > TERM_DIST

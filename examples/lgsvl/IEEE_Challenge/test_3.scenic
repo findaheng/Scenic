@@ -11,7 +11,6 @@ DESCRIPTION: Move out of travel lane/park
 param map = localPath('/home/scenic/Desktop/Carla/VerifiedAI/Scenic-devel/examples/lgsvl/maps/borregasave.xodr')
 param lgsvl_map = 'BorregasAve'
 param time_step = 1.0/10
-
 param apolloHDMap = 'Borregas Ave'
 model scenic.simulators.lgsvl.model
 
@@ -19,25 +18,23 @@ model scenic.simulators.lgsvl.model
 # CONSTANTS                     #
 #################################
 
-INIT_DIST = 50
-TERM_TIME = 5
+BUFFER_DIST = 50
 
 #################################
 # SPATIAL RELATIONS             #
 #################################
 
-initLane = Uniform(*network.lanes)
-endPt = OrientedPoint in initLane.centerline
+refPt = OrientedPoint in Uniform(*network.lanes).centerline
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-npc = Car ahead of endPt by 10
-npc_2 = Car ahead of npc by 7
-npc_3 = Car behind npc by 10
+npc_1 = Car ahead of refPt by 10
+npc_2 = Car ahead of npc_1 by 7
+npc_3 = Car behind npc_1 by 10
 
 ego = ApolloCar left of npc_3 by 3,
-	with behavior DriveTo(endPt)
+	with behavior DriveTo(refPt)
 
-require (distance to intersection) > INIT_DIST
+require (distance to intersection) > BUFFER_DIST

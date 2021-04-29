@@ -11,7 +11,6 @@ DESCRIPTION: Perform lane change/low-speed merge
 param map = localPath('/home/scenic/Desktop/Carla/VerifiedAI/Scenic-devel/examples/lgsvl/maps/borregasave.xodr')
 param lgsvl_map = 'BorregasAve'
 param time_step = 1.0/10
-
 param apolloHDMap = 'Borregas Ave'
 model scenic.simulators.lgsvl.model
 
