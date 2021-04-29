@@ -62,7 +62,7 @@ class ADE_FDE(multi_objective_monitor):
             ADEs, FDEs = [], []
             for i in range(6):
                 # Extract predicted trajectories from CSV file
-                preds = np.genfromtxt(f'{model_path}/results/lanegcn/predictions_{i}_{self.worker_num}.csv', delimiter=',', skip_header=1)
+                preds = np.genfromtxt(f'{model_path}/results/lanegcn/predictions_{self.worker_num}_{i}.csv', delimiter=',', skip_header=1)
                 pred_len = preds.shape[0]
                 if gt_len < pred_len:
                     preds = preds[:gt_len]
