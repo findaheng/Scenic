@@ -50,6 +50,8 @@ behavior EgoBehavior():
 lane = Uniform(*network.lanes)
 spawnPt = OrientedPoint in lane.centerline
 endPt = OrientedPoint following roadDirection from spawnPt for TERM_DIST
+pedEndPt = OrientedPoint left of spawnPt by VerifaiRange(0, 0),
+    with speed VerifaiRange(1, 3)
 
 #################################
 # SCENARIO SPECIFICATION        #
@@ -61,7 +63,7 @@ ego = ApolloCar following roadDirection from spawnPt for globalParameters.EGO_IN
 ped = Pedestrian right of spawnPt by 3,
     with heading 90 deg relative to spawnPt.heading,
     with regionContainedIn None,
-    with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
+    with behavior FollowWaypoints([pedEndPt])
 
 require (distance to intersection) > BUFFER_DIST
 require always (ego.laneSection._slowerLane is None)
