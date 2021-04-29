@@ -57,7 +57,7 @@ class ADE_FDE(multi_objective_monitor):
             # Run behavior prediction model
             os.chdir(model_path)
             subprocess.run(['python', 'preprocess_data.py', '-n', '1'])
-            subprocess.run(['python', 'test.py', '-m', 'lanegcn', f'--weight={model_path}/36.000.ckpt', '--split=test', '--map_path=/home/carla_challenge/Desktop/francis/Scenic/tests/formats/opendrive/maps/CARLA/Town05.xodr'])
+            subprocess.run(['python', 'test.py', '-m', 'lanegcn', f'--weight={model_path}/36.000.ckpt', '--split=test', '--map_path=/home/carla_challenge/Desktop/francis/Scenic/tests/formats/opendrive/maps/CARLA/Town05.xodr', f'--worker_num={self.worker_num}'])
 
             ADEs, FDEs = [], []
             for i in range(6):
@@ -153,14 +153,27 @@ def run_experiment(scenic_path, model_path, thresholds=None,
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--path', '-p', type=str, default='/home/carla_challenge/Desktop/francis/Scenic/examples/carla/Behavior_Prediction/intersection/intersection_01.scenic', help='Path to Scenic program')
-    parser.add_argument('--model', '-m', type=str, default='/home/carla_challenge/Desktop/francis/LaneGCN', help='Path to behavior prediction model')
-    parser.add_argument('--threshold', '-t', type=float, action='append')
-    parser.add_argument('--samplerType', '-s', type=str, default=None,
-    help='verifaiSamplerType to use')
-    parser.add_argument('--parallel', action='store_true')
-    parser.add_argument('--headless', action='store_true')
-    parser.add_argument('--debug', action='store_true')
+    parser.add_argument(
+        '--path', '-p', type=str, default='/home/carla_challenge/Desktop/francis/Scenic/examples/carla/Behavior_Prediction/intersection/intersection_01.scenic', help='Path to Scenic program'
+    )
+    parser.add_argument(
+        '--model', '-m', type=str, default='/home/carla_challenge/Desktop/francis/LaneGCN', help='Path to behavior prediction model'
+    )
+    parser.add_argument(
+        '--threshold', '-t', type=float, action='append'
+    )
+    parser.add_argument(
+        '--samplerType', '-s', type=str, default=None, help='verifaiSamplerType'
+    )
+    parser.add_argument(
+        '--parallel', action='store_true'
+    )
+    parser.add_argument(
+        '--headless', action='store_true'
+    )
+    parser.add_argument(
+        '--debug', action='store_true'
+    )
     args = parser.parse_args()
 
     falsifier = run_experiment(args.path, args.model,
