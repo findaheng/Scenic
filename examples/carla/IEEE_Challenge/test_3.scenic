@@ -8,9 +8,12 @@ DESCRIPTION: Move out of travel lane/park
 # MAP AND MODEL                 #
 #################################
 
-param map = localPath('../../../tests/formats/opendrive/maps/CARLA/Town03.xodr')
-param carla_map = 'Town03'
-model scenic.simulators.carla.model
+param map = localPath('/home/scenic/Desktop/Carla/VerifiedAI/Scenic-devel/examples/lgsvl/maps/borregasave.xodr')
+param lgsvl_map = 'BorregasAve'
+param time_step = 1.0/10
+
+param apolloHDMap = 'Borregas Ave'
+model scenic.simulators.lgsvl.model
 
 #################################
 # CONSTANTS                     #
@@ -23,20 +26,18 @@ TERM_TIME = 5
 # SPATIAL RELATIONS             #
 #################################
 
-initLane = Uniform(*filter(lamdba ln: network.lanes)
-npcSpawnPt = OrientedPoint in initLane.centerline
+initLane = Uniform(*network.lanes)
+endPt = OrientedPoint in initLane.centerline
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-npc = Car at npcSpawnPt
-npc_2 = Car ahead of npc by 2
+npc = Car ahead of endPt by 10
+npc_2 = Car ahead of npc by 7
 npc_3 = Car behind npc by 10
 
-ego = Car left of npc_3 by 3
+ego = ApolloCar left of npc_3 by 3,
+	with behavior DriveTo(endPt)
 
 require (distance to intersection) > INIT_DIST
-require (distance from adversary to intersection) > INIT_DIST
-require always (npc.laneSection._laneToRight is None)
-require always (npc.laneSection._fasterLane is not None)

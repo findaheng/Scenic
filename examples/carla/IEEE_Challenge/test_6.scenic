@@ -8,15 +8,16 @@ DESCRIPTION: Detect and respond to pedestrians
 # MAP AND MODEL                 #
 #################################
 
-param map = localPath('../../../tests/formats/opendrive/maps/CARLA/Town01.xodr')
-param carla_map = 'Town01'
-model scenic.simulators.carla.model
+param map = localPath('/home/scenic/Desktop/Carla/VerifiedAI/Scenic-devel/examples/lgsvl/maps/borregasave.xodr')
+param lgsvl_map = 'BorregasAve'
+param time_step = 1.0/10
+
+param apolloHDMap = 'Borregas Ave'
+model scenic.simulators.lgsvl.model
 
 #################################
 # CONSTANTS                     #
 #################################
-
-MODEL = 'vehicle.lincoln.mkz2017'
 
 param EGO_INIT_DIST = VerifaiRange(-30, -20)
 param EGO_SPEED = VerifaiRange(7, 10)
@@ -47,22 +48,24 @@ behavior EgoBehavior():
 #################################
 
 lane = Uniform(*network.lanes)
-spawnPt = OrientedPoint on lane.centerline
+spawnPt = OrientedPoint in lane.centerline
+endPt = OrientedPoint following roadDirection from spawnPt for TERM_DIST
+pedEndPt = OrientedPoint left of spawnPt by VerifaiRange(0, 0),
+    with speed VerifaiRange(1, 3)
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car following roadDirection from spawnPt for globalParameters.EGO_INIT_DIST,
-    with blueprint MODEL,
-    with behavior EgoBehavior()
+ego = ApolloCar following roadDirection from spawnPt for globalParameters.EGO_INIT_DIST,
+    with behavior DriveTo(endPt)
 
 ped = Pedestrian right of spawnPt by 3,
     with heading 90 deg relative to spawnPt.heading,
     with regionContainedIn None,
-    with behavior CrossingBehavior(ego, PED_MIN_SPEED, PED_THRESHOLD)
+    with behavior FollowWaypoints([pedEndPt])
 
 require (distance to intersection) > BUFFER_DIST
 require always (ego.laneSection._slowerLane is None)
 require always (ego.laneSection._fasterLane is None)
-terminate when (distance to spawnPt) > TERM_DIST
+# terminate when (distance to spawnPt) > TERM_DIST

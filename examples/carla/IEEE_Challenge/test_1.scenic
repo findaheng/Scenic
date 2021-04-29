@@ -1,5 +1,5 @@
 """
-TITLE: IEEE Challenge - Test 1
+TITLE: IEEE Challenge - Test 3
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Perform lane change/low-speed merge
 """
@@ -8,67 +8,41 @@ DESCRIPTION: Perform lane change/low-speed merge
 # MAP AND MODEL                 #
 #################################
 
-param map = localPath('../../../tests/formats/opendrive/maps/CARLA/Town03.xodr')
-param carla_map = 'Town03'
-model scenic.simulators.carla.model
+param map = localPath('/home/scenic/Desktop/Carla/VerifiedAI/Scenic-devel/examples/lgsvl/maps/borregasave.xodr')
+param lgsvl_map = 'BorregasAve'
+param time_step = 1.0/10
+
+param apolloHDMap = 'Borregas Ave'
+model scenic.simulators.lgsvl.model
 
 #################################
 # CONSTANTS                     #
 #################################
 
-MODEL = 'vehicle.lincoln.mkz2017'
-
-param EGO_SPEED = VerifaiRange(7, 10)
-
-param ADV_DIST = VerifaiRange(10, 25)
-param ADV_SPEED = VerifaiRange(2, 4)
-
-BYPASS_DIST = [15, 10]
 INIT_DIST = 50
 TERM_TIME = 5
-
-#################################
-# AGENT BEHAVIORS               #
-#################################
-
-behavior EgoBehavior():
-	try:
-		do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED)
-	interrupt when withinDistanceToAnyObjs(self, BYPASS_DIST[0]):
-		fasterLaneSec = self.laneSection.fasterLane
-		do LaneChangeBehavior(
-				laneSectionToSwitch=fasterLaneSec,
-				target_speed=globalParameters.EGO_SPEED)
-		do FollowLaneBehavior(
-				target_speed=globalParameters.EGO_SPEED,
-				laneToFollow=fasterLaneSec.lane) \
-			until (distance to adversary) > BYPASS_DIST[1]
-		slowerLaneSec = self.laneSection.slowerLane
-		do LaneChangeBehavior(
-				laneSectionToSwitch=slowerLaneSec,
-				target_speed=globalParameters.EGO_SPEED)
-		do FollowLaneBehavior(target_speed=globalParameters.EGO_SPEED) for TERM_TIME seconds
-		terminate 
 
 #################################
 # SPATIAL RELATIONS             #
 #################################
 
-initLane = Uniform(*network.lanes)
-egoSpawnPt = OrientedPoint in initLane.centerline
+intersection = Uniform(*filter(lambda i: any([len(l.group.lanes) > 1 for l in i.incomingLanes]), network.intersections))
+rightTurnManuever = Uniform(*filter(lambda m: m.type is ManeuverType.RIGHT_TURN, intersection.maneuvers))
+
+spawnPt = OrientedPoint in rightTurnManuever.startLane.centerline
+endPt = OrientedPoint in rightTurnManuever.endLane.centerline
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car at egoSpawnPt,
-	with blueprint MODEL,
-	with behavior EgoBehavior()
+npc = Car at spawnPt,
+	with behavior FollowLaneBehavior(target_speed=7)
 
-adversary = Car following roadDirection for globalParameters.ADV_DIST,
-	with blueprint MODEL,
-	with behavior FollowLaneBehavior(target_speed=globalParameters.ADV_SPEED)
+npc_2 = Car behind npc by 20,
+	with behavior FollowLaneBehavior(target_speed=7)
 
-require (distance to intersection) > INIT_DIST
-require (distance from adversary to intersection) > INIT_DIST
-require always (adversary.laneSection._fasterLane is not None)
+ego = ApolloCar left of npc_2 by 3,
+	with behavior DriveTo(endPt)
+
+require (distance from npc to intersection) > 10

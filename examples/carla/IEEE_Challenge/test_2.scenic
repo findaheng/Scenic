@@ -8,9 +8,12 @@ DESCRIPTION: Perform vehicle following
 # MAP AND MODEL                 #
 #################################
 
-param map = localPath('../../../tests/formats/opendrive/maps/CARLA/Town03.xodr')
-param carla_map = 'Town03'
-model scenic.simulators.carla.model
+param map = localPath('/home/scenic/Desktop/Carla/VerifiedAI/Scenic-devel/examples/lgsvl/maps/borregasave.xodr')
+param lgsvl_map = 'BorregasAve'
+param time_step = 1.0/10
+
+param apolloHDMap = 'Borregas Ave'
+model scenic.simulators.lgsvl.model
 
 #################################
 # CONSTANTS                     #
@@ -28,16 +31,17 @@ TERM_DIST = 70
 
 initLane = Uniform(*network.lanes)
 egoSpawnPt = OrientedPoint in initLane.centerline
+endPt = OrientedPoint following roadDirection from egoSpawnPt for TERM_DIST
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car at egoSpawnPt,
-	with behavior FollowLaneBehavior(target_speed=globalParameters.LEAD_SPEED)
+ego = ApolloCar at egoSpawnPt,
+	with behavior DriveTo(endPt)
 
-adversary = Car following roadDirection for globalParameters.LEAD_DIST,
+lead = Car following roadDirection for globalParameters.LEAD_DIST,
 	with behavior FollowLaneBehavior(target_speed=globalParameters.LEAD_SPEED)
 
 require (distance to intersection) > INIT_DIST
-terminate when (distance to egoSpawnPt) > TERM_DIST
+# terminate when (distance to egoSpawnPt) > TERM_DIST

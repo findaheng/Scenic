@@ -20,7 +20,7 @@ model scenic.simulators.carla.model
 param N = 5  # number of additional vehicles
 
 param EGO_SPEED = VerifaiRange(7, 10)
-param EGO_SAFETY_DIST = VerifaiRange(10, 20)
+param EGO_SAFETY_DIST = VerifaiRange(5, 10)
 EGO_BRAKE = 1.0
 
 param OTHER_SPEEDS = [VerifaiRange(7, 10) for _ in range(globalParameters.N)]
@@ -32,10 +32,10 @@ OTHER_BRAKE = 1.0
 #################################
 
 behavior IntersectionBehavior(trajectory, speed, safetyDist, brake):
-	try:
-		do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
-	interrupt when withinDistanceToAnyObjs(self, safetyDist):
-		take SetBrakeAction(brake)
+	do FollowTrajectoryBehavior(target_speed=speed, trajectory=trajectory)
+	# interrupt when withinDistanceToAnyObjs(self, safetyDist):
+        # pass
+		# take SetBrakeAction(brake)
 
 #################################
 # SPATIAL RELATIONS             #
