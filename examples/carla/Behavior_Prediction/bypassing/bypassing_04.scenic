@@ -52,8 +52,8 @@ behavior Adversary2Behavior():
 	rightLaneSec = self.laneSection.laneToRight
 	do LaneChangeBehavior(
 		laneSectionToSwitch=rightLaneSec,
-		target_speed=ADV_SPEED)
-	do FollowLaneBehavior(target_speed=ADV_SPEED)
+		target_speed=globalParameters.ADV_SPEED)
+	do FollowLaneBehavior(target_speed=globalParameters.ADV_SPEED)
 
 #################################
 # SPATIAL RELATIONS             #
