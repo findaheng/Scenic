@@ -1,7 +1,7 @@
 """
 TITLE: Behavior Prediction - Roundabout 01
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
-DESCRIPTION: 
+DESCRIPTION: N vehicles approach a roundabout and take a random maneuver.
 SOURCE: INTERACTION, DR_CHN_Roundabout_LN
 """
 
@@ -17,23 +17,12 @@ model scenic.simulators.carla.model
 # CONSTANTS                     #
 #################################
 
+param N = 5  # number of additional vehicles
+
 MODEL = 'vehicle.lincoln.mkz2017'
 
-EGO_INIT_DIST = [20, 25]
-EGO_SPEED = VerifaiRange(7, 10)
-EGO_BRAKE = VerifaiRange(0.5, 1.0)
-
-ADV_INIT_DIST = [15, 20]
-ADV_SPEED = VerifaiRange(7, 10)
-
-SAFETY_DIST = VerifaiRange(10, 20)
-TERM_DIST = 70
-
-#################################
-# AGENT BEHAVIORS               #
-#################################
-
-
+param EGO_SPEED = VerifaiRange(7, 10)
+param OTHER_SPEEDS = [VerifaiRange(7, 10) for _ in range(globalParameters.N)]
 
 #################################
 # SPATIAL RELATIONS             #
@@ -42,16 +31,20 @@ TERM_DIST = 70
 roundabout = Uniform(*filter(lambda i: len(i.incomingLanes) == 7, network.intersections))
 
 egoInitLane = Uniform(*roundabout.incomingLanes)
-
-egoManeuver = Uniform(*filter(lambda m: m.type is ManeuverType.STRAIGHT, egoInitLane.maneuvers))
+egoManeuver = Uniform(*egoInitLane.maneuvers)
+egoTrajectory = [egoInitLane, egoManeuver.connectingLane, egoManeuver.endLane]
 
 #################################
 # SCENARIO SPECIFICATION        #
 #################################
 
-ego = Car at egoSpawnPt,
+ego = Car on egoInitLane,
 	with blueprint MODEL,
-	with behavior FollowLaneBehavior(EGO_SPEED)
+	with behavior FollowTrajectoryBehavior(target_speed=globalParameters.EGO_SPEED, trajectory=egoTrajectory)
 
-require EGO_INIT_DIST[0] <= (distance to intersection) <= EGO_INIT_DIST[1]
-terminate when (distance to egoSpawnPt) > TERM_DIST
+for i in range(globalParameters.N):
+    tempInitLane = Uniform(*roundabout.incomingLanes)
+    tempManeuver = Uniform(*tempInitLane.maneuvers)
+    tempTrajectory = [tempInitLane, tempManeuver.connectingLane, tempManeuver.endLane]
+    Car on tempInitLane,
+        with behavior FollowTrajectoryBehavior(target_speed=globalParameters.OTHER_SPEEDS[i], trajectory=tempTrajectory)
