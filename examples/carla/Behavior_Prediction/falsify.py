@@ -90,7 +90,7 @@ class ADE_FDE(multi_objective_monitor):
 
                 if self.debug:
                     print(f'ADE: {ADE}, FDE: {FDE}')
-                    p = pd.read_csv(f'{model_path}/results/lanegcn/predictions_{i}_0.csv')
+                    p = pd.read_csv(f'{model_path}/results/lanegcn/predictions_{self.worker_num}_{i}.csv')
                     plt.plot(p['X'], p['Y'], color='green')
 
             minADE, minFDE = min(ADEs), min(FDEs)
