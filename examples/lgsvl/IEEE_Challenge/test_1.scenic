@@ -1,5 +1,5 @@
 """
-TITLE: IEEE Challenge - Test 3
+TITLE: IEEE Challenge - Test 1
 AUTHOR: Francis Indaheng, findaheng@berkeley.edu
 DESCRIPTION: Perform lane change/low-speed merge
 """
