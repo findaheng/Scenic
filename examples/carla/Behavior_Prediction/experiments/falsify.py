@@ -27,7 +27,7 @@ class ADE_FDE(multi_objective_monitor):
         assert timepoint >= 20, 'Must allow at least 20 timesteps of past trajectories!'
 
         def specification(simulation):
-            worker_num = simulation.worker_num if self.parallel else 1
+            worker_num = simulation.worker_num if self.parallel else 0
             traj = simulation.trajectory
             num_agents = len(traj[0])
             hist_traj = traj[timepoint-20:timepoint]
