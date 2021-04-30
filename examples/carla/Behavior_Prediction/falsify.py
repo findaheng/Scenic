@@ -111,8 +111,8 @@ def announce(message):
     print(border)
 
 def run_experiment(scenic_path, model_path, thresholds=None,
-                    sampler_type=None, num_workers=1, headless=False,
-                    output_dir='outputs', debug=False):
+                    sampler_type=None, num_workers=1, num_iters=10, 
+                    headless=False, output_dir='outputs', debug=False):
     announce(f'RUNNING SCENIC PROGRAM {scenic_path}')
     
     parallel = num_workers > 1
@@ -120,7 +120,7 @@ def run_experiment(scenic_path, model_path, thresholds=None,
     params['render'] = not headless
     sampler = ScenicSampler.fromScenario(scenic_path, **params)
     falsifier_params = DotMap(
-        n_iters=10,
+        n_iters=num_iters,
         save_error_table=True,
         save_safe_table=True,
         max_time=None,
@@ -183,6 +183,9 @@ if __name__ == '__main__':
         '--numWorkers', '-n', type=int, default=1, help='Number of parallel workers'
     )
     parser.add_argument(
+    	'--numIters', '-i', type=int, default=10, help='Number of iterations to run'
+    )
+    parser.add_argument(
         '--headless', action='store_true'
     )
     parser.add_argument(
@@ -191,6 +194,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     path = '/home/carla_challenge/Desktop/francis/Scenic/examples/carla/Behavior_Prediction/' + args.path
-    falsifier = run_experiment(path, args.model,
-        thresholds=tuple(args.threshold), sampler_type=args.samplerType,
-        num_workers=args.numWorkers, headless=args.headless, debug=args.debug)
+    falsifier = run_experiment(path, args.model, thresholds=tuple(args.threshold),
+    	sampler_type=args.samplerType, num_workers=args.numWorkers, num_iters=args.numIters,
+    	headless=args.headless, debug=args.debug)
