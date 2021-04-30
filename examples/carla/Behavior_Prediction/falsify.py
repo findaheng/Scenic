@@ -15,15 +15,17 @@ from verifai.falsifier import generic_falsifier, generic_parallel_falsifier
 from verifai.monitor import multi_objective_monitor
 
 class ADE_FDE(multi_objective_monitor):
-    def __init__(self, model_path, thresholds=(2, 2), timepoint=20, debug=False):
+    def __init__(self, model_path, thresholds=(2, 2), timepoint=20, parallel=False, debug=False):
         priority_graph = None
         self.model_path = model_path
         self.num_objectives = 2
+        self.parallel = parallel
         self.debug = debug
         self.thresholds = thresholds; assert len(thresholds) == self.num_objectives
         self.timepoint = timepoint; assert timepoint >= 20, 'Must allow at least 20 timesteps of past trajectories!'
 
         def specification(simulation):
+        	worker_num = simulation.worker_num if self.parallel else 1
             traj = simulation.trajectory
             num_agents = len(traj[0])
             hist_traj = traj[timepoint-20:timepoint]
@@ -39,7 +41,7 @@ class ADE_FDE(multi_objective_monitor):
                 plt.plot([gt[-1][0] for gt in gt_traj], [gt[-1][1] for gt in gt_traj], color='yellow')
 
             # Process historical trajectory CSV file
-            with open(f'{model_path}/dataset/test_obs/data/{simulation.worker_num}.csv', 'w', newline='') as csvfile:
+            with open(f'{model_path}/dataset/test_obs/data/{worker_num}.csv', 'w', newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(['TIMESTAMP', 'TRACK_ID', 'OBJECT_TYPE', 'X', 'Y', 'CITY_NAME'])
                 track_id = '00000000-0000-0000-0000-000000000000'
@@ -58,13 +60,13 @@ class ADE_FDE(multi_objective_monitor):
             currDir = os.path.abspath(os.getcwd())
             os.chdir(model_path)
             subprocess.run(['python', 'preprocess_data.py', '-n', '1'])
-            subprocess.run(['python', 'test.py', '-m', 'lanegcn', f'--weight={model_path}/36.000.ckpt', '--split=test', '--map_path=/home/carla_challenge/Desktop/francis/Scenic/tests/formats/opendrive/maps/CARLA/Town05.xodr', f'--worker_num={simulation.worker_num}'])
+            subprocess.run(['python', 'test.py', '-m', 'lanegcn', f'--weight={model_path}/36.000.ckpt', '--split=test', '--map_path=/home/carla_challenge/Desktop/francis/Scenic/tests/formats/opendrive/maps/CARLA/Town05.xodr', f'--worker_num={worker_num}'])
             os.chdir(currDir)
 
             ADEs, FDEs = [], []
             for i in range(6):
                 # Extract predicted trajectories from CSV file
-                preds = np.genfromtxt(f'{model_path}/results/lanegcn/predictions_{simulation.worker_num}_{i}.csv', delimiter=',', skip_header=1)
+                preds = np.genfromtxt(f'{model_path}/results/lanegcn/predictions_{worker_num}_{i}.csv', delimiter=',', skip_header=1)
                 pred_len = preds.shape[0]
                 if gt_len < pred_len:
                     preds = preds[:gt_len]
@@ -89,7 +91,7 @@ class ADE_FDE(multi_objective_monitor):
 
                 if self.debug:
                     print(f'ADE: {ADE}, FDE: {FDE}')
-                    p = pd.read_csv(f'{model_path}/results/lanegcn/predictions_{simulation.worker_num}_{i}.csv')
+                    p = pd.read_csv(f'{model_path}/results/lanegcn/predictions_{worker_num}_{i}.csv')
                     plt.plot(p['X'], p['Y'], color='green')
 
             minADE, minFDE = min(ADEs), min(FDEs)
@@ -125,7 +127,7 @@ def run_experiment(scenic_path, model_path, thresholds=None,
         max_time=None,
     )
     server_options = DotMap(maxSteps=200, verbosity=0)
-    monitor = ADE_FDE(model_path, thresholds=thresholds, timepoint=40, debug=debug) \
+    monitor = ADE_FDE(model_path, thresholds=thresholds, timepoint=40, parallel=parallel, debug=debug) \
         if thresholds else \
         ADE_FDE(model_path, worker_num=0, debug=debug)
 
