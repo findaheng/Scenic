@@ -32,11 +32,11 @@ For questions and concerns, please contact Francis Indaheng at findaheng@berkele
 05. Ego vehicle performs multiple lane changes to bypass three slow adversary vehicles.
 
 ## Roundabout
-01. N vehicles approach a roundabout and take a random maneuver.
+01. (TIP) N vehicles approach a roundabout and take a random maneuver.
 
 ## Merging
-01. Ego vehicle attempts to merge between two vehicles in adjacent lane.
-02. Ego vehicle merges into merging lanes off highway.
+01. (TIP) Ego vehicle attempts to merge between two vehicles in adjacent lane.
+02. (DIP) Ego vehicle merges into merging lanes off highway.
 
 ## Pedestrian
 01. Ego vehicle must suddenly stop to avoid collision when pedestrian crosses the road unexpectedly.
