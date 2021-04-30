@@ -21,8 +21,10 @@ class ADE_FDE(multi_objective_monitor):
         self.num_objectives = 2
         self.parallel = parallel
         self.debug = debug
-        self.thresholds = thresholds; assert len(thresholds) == self.num_objectives
-        self.timepoint = timepoint; assert timepoint >= 20, 'Must allow at least 20 timesteps of past trajectories!'
+        self.thresholds = thresholds
+        self.timepoint = timepoint
+        assert len(thresholds) == self.num_objectives, f'Must include {self.num_objectives} threshold values!'
+        assert timepoint >= 20, 'Must allow at least 20 timesteps of past trajectories!'
 
         def specification(simulation):
             worker_num = simulation.worker_num if self.parallel else 1
