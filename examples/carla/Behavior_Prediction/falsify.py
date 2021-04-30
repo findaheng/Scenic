@@ -25,7 +25,7 @@ class ADE_FDE(multi_objective_monitor):
         self.timepoint = timepoint; assert timepoint >= 20, 'Must allow at least 20 timesteps of past trajectories!'
 
         def specification(simulation):
-        	worker_num = simulation.worker_num if self.parallel else 1
+            worker_num = simulation.worker_num if self.parallel else 1
             traj = simulation.trajectory
             num_agents = len(traj[0])
             hist_traj = traj[timepoint-20:timepoint]
@@ -184,7 +184,7 @@ if __name__ == '__main__':
         '--numWorkers', '-n', type=int, default=1, help='Number of parallel workers'
     )
     parser.add_argument(
-    	'--numIters', '-i', type=int, default=10, help='Number of iterations to run'
+        '--numIters', '-i', type=int, default=10, help='Number of iterations to run'
     )
     parser.add_argument(
         '--headless', action='store_true'
@@ -196,5 +196,5 @@ if __name__ == '__main__':
 
     path = '/home/carla_challenge/Desktop/francis/Scenic/examples/carla/Behavior_Prediction/' + args.path
     falsifier = run_experiment(path, args.model, thresholds=tuple(args.threshold),
-    	sampler_type=args.samplerType, num_workers=args.numWorkers, num_iters=args.numIters,
-    	headless=args.headless, debug=args.debug)
+        sampler_type=args.samplerType, num_workers=args.numWorkers, num_iters=args.numIters,
+        headless=args.headless, debug=args.debug)
