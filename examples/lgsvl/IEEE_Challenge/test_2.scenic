@@ -8,7 +8,7 @@ DESCRIPTION: Perform vehicle following
 # MAP AND MODEL                 #
 #################################
 
-param map = localPath('/home/scenic/Desktop/Carla/VerifiedAI/Scenic-devel/examples/lgsvl/maps/borregasave.xodr')
+param map = localPath('../../../tests/formats/opendrive/aps/borregasave.xodr')
 param lgsvl_map = 'BorregasAve'
 param time_step = 1.0/10
 param apolloHDMap = 'Borregas Ave'
