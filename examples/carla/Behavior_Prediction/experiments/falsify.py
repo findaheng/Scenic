@@ -14,11 +14,11 @@ from verifai.scenic_server import ScenicServer
 from verifai.falsifier import generic_falsifier, generic_parallel_falsifier
 from verifai.monitor import multi_objective_monitor
 
-class ADE_FDE_MR(multi_objective_monitor):
-    def __init__(self, model_path, thresholds=(2, 2, 2), timepoint=20, parallel=False, debug=False):
+class ADE_FDE(multi_objective_monitor):
+    def __init__(self, model_path, thresholds=(2, 2), timepoint=20, parallel=False, debug=False):
         priority_graph = None
         self.model_path = model_path
-        self.num_objectives = 3
+        self.num_objectives = 2
         self.parallel = parallel
         self.debug = debug
         self.thresholds = thresholds
@@ -97,9 +97,8 @@ class ADE_FDE_MR(multi_objective_monitor):
                     plt.plot(p['X'], p['Y'], color='green')
 
             minADE, minFDE = min(ADEs), min(FDEs)
-            MR = len(list(filter(lambda x: x < threshMR, FDEs))) / 6
-            print(f'minADE: {minADE}, minFDE: {minFDE}, MR: {MR}')
-            rho = (threshADE - minADE, threshFDE - minFDE, MR)
+            print(f'minADE: {minADE}, minFDE: {minFDE}')
+            rho = (threshADE - minADE, threshFDE - minFDE)
 
             if self.debug:
                 plt.show()
