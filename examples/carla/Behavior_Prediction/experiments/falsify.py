@@ -34,7 +34,7 @@ class ADE_FDE(multi_objective_monitor):
             gt_traj = traj[timepoint:timepoint+15]
             gts = np.asarray([(tj[-1][0], tj[-1][1]) for tj in gt_traj])
             gt_len = len(gts)
-            threshADE, threshFDE, threshMR = self.thresholds
+            threshADE, threshFDE = self.thresholds
 
             if self.debug:
                 print(f'ADE Threshold: {threshADE}, FDE Threshold: {threshFDE}')
