@@ -182,7 +182,7 @@ if __name__ == '__main__':
         '--threshold', '-t', type=float, action='append'
     )
     parser.add_argument(
-        '--timepoint', '-k', type=int, action='Timepoint to start behavior prediction'
+        '--timepoint', '-k', type=int, default=20, help='Timepoint to start behavior prediction'
     )
     parser.add_argument(
         '--samplerType', '-s', type=str, default=None, help='verifaiSamplerType'
