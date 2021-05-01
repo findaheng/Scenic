@@ -130,9 +130,9 @@ def run_experiment(scenic_path, model_path, thresholds=None, timepoint=20,
     )
     server_options = DotMap(maxSteps=200, verbosity=0)
     if thresholds:
-        monitor = ADE_FDE_MR(model_path, thresholds=thresholds, timepoint=timepoint, parallel=parallel, debug=debug)
+        monitor = ADE_FDE(model_path, thresholds=thresholds, timepoint=timepoint, parallel=parallel, debug=debug)
     else:
-        monitor = ADE_FDE_MR(model_path, timepoint=timepoint, parallel=parallel, debug=debug)
+        monitor = ADE_FDE(model_path, timepoint=timepoint, parallel=parallel, debug=debug)
 
     falsifier_cls = generic_parallel_falsifier if parallel else generic_falsifier
     falsifier = falsifier_cls(sampler=sampler, falsifier_params=falsifier_params,
