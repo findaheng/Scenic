@@ -130,7 +130,7 @@ def run_experiment(scenic_path, model_path, thresholds=None, timepoint=20,
         max_time=None,
     )
     server_options = DotMap(maxSteps=200, verbosity=0)
-    if threshholds:
+    if thresholds:
         monitor = ADE_FDE_MR(model_path, thresholds=thresholds, timepoint=timepoint, parallel=parallel, debug=debug)
     else:
         monitor = ADE_FDE_MR(model_path, timepoint=timepoint, parallel=parallel, debug=debug)
