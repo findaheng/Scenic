@@ -98,7 +98,7 @@ class ADE_FDE_MR(multi_objective_monitor):
 
             minADE, minFDE = min(ADEs), min(FDEs)
             MR = len(list(filter(lambda x: x < threshMR, FDEs))) / 6
-            print(f'minADE: {minADE}, minFDE: {minFDE}')
+            print(f'minADE: {minADE}, minFDE: {minFDE}, MR: {MR}')
             rho = (threshADE - minADE, threshFDE - minFDE, MR)
 
             if self.debug:
@@ -114,7 +114,7 @@ def announce(message):
     print(m)
     print(border)
 
-def run_experiment(scenic_path, model_path, thresholds=None, timepoint=20
+def run_experiment(scenic_path, model_path, thresholds=None, timepoint=20,
                     sampler_type=None, num_workers=1, num_iters=10, 
                     headless=False, output_dir='outputs', debug=False):
     announce(f'RUNNING SCENIC PROGRAM {scenic_path}')
@@ -130,9 +130,10 @@ def run_experiment(scenic_path, model_path, thresholds=None, timepoint=20
         max_time=None,
     )
     server_options = DotMap(maxSteps=200, verbosity=0)
-    monitor = ADE_FDE_MR(model_path, thresholds=thresholds, timepoint=timepoint, parallel=parallel, debug=debug) \
-        if thresholds else \
-        ADE_FDE_MR(model_path, worker_num=0, debug=debug)
+    if threshholds:
+        monitor = ADE_FDE_MR(model_path, thresholds=thresholds, timepoint=timepoint, parallel=parallel, debug=debug)
+    else:
+        monitor = ADE_FDE_MR(model_path, timepoint=timepoint, parallel=parallel, debug=debug)
 
     falsifier_cls = generic_parallel_falsifier if parallel else generic_falsifier
     falsifier = falsifier_cls(sampler=sampler, falsifier_params=falsifier_params,
