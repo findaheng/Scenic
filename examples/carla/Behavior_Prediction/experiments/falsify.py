@@ -14,11 +14,11 @@ from verifai.scenic_server import ScenicServer
 from verifai.falsifier import generic_falsifier, generic_parallel_falsifier
 from verifai.monitor import multi_objective_monitor
 
-class ADE_FDE(multi_objective_monitor):
-    def __init__(self, model_path, thresholds=(2, 2), timepoint=20, parallel=False, debug=False):
+class ADE_FDE_MR(multi_objective_monitor):
+    def __init__(self, model_path, thresholds=(2, 2, 2), timepoint=20, parallel=False, debug=False):
         priority_graph = None
         self.model_path = model_path
-        self.num_objectives = 2
+        self.num_objectives = 3
         self.parallel = parallel
         self.debug = debug
         self.thresholds = thresholds
@@ -34,7 +34,7 @@ class ADE_FDE(multi_objective_monitor):
             gt_traj = traj[timepoint:timepoint+15]
             gts = np.asarray([(tj[-1][0], tj[-1][1]) for tj in gt_traj])
             gt_len = len(gts)
-            threshADE, threshFDE = self.thresholds
+            threshADE, threshFDE, threshMR = self.thresholds
 
             if self.debug:
                 print(f'ADE Threshold: {threshADE}, FDE Threshold: {threshFDE}')
@@ -97,8 +97,9 @@ class ADE_FDE(multi_objective_monitor):
                     plt.plot(p['X'], p['Y'], color='green')
 
             minADE, minFDE = min(ADEs), min(FDEs)
+            MR = len(list(filter(lambda x: x < threshMR, FDEs))) / 6
             print(f'minADE: {minADE}, minFDE: {minFDE}')
-            rho = (threshADE - minADE, threshFDE - minFDE)
+            rho = (threshADE - minADE, threshFDE - minFDE, MR)
 
             if self.debug:
                 plt.show()
@@ -113,7 +114,7 @@ def announce(message):
     print(m)
     print(border)
 
-def run_experiment(scenic_path, model_path, thresholds=None,
+def run_experiment(scenic_path, model_path, thresholds=None, timepoint=20
                     sampler_type=None, num_workers=1, num_iters=10, 
                     headless=False, output_dir='outputs', debug=False):
     announce(f'RUNNING SCENIC PROGRAM {scenic_path}')
@@ -129,9 +130,9 @@ def run_experiment(scenic_path, model_path, thresholds=None,
         max_time=None,
     )
     server_options = DotMap(maxSteps=200, verbosity=0)
-    monitor = ADE_FDE(model_path, thresholds=thresholds, timepoint=40, parallel=parallel, debug=debug) \
+    monitor = ADE_FDE_MR(model_path, thresholds=thresholds, timepoint=timepoint, parallel=parallel, debug=debug) \
         if thresholds else \
-        ADE_FDE(model_path, worker_num=0, debug=debug)
+        ADE_FDE_MR(model_path, worker_num=0, debug=debug)
 
     falsifier_cls = generic_parallel_falsifier if parallel else generic_falsifier
     falsifier = falsifier_cls(sampler=sampler, falsifier_params=falsifier_params,
@@ -180,6 +181,9 @@ if __name__ == '__main__':
         '--threshold', '-t', type=float, action='append'
     )
     parser.add_argument(
+        '--timepoint', '-k', type=int, action='Timepoint to start behavior prediction'
+    )
+    parser.add_argument(
         '--samplerType', '-s', type=str, default=None, help='verifaiSamplerType'
     )
     parser.add_argument(
@@ -197,6 +201,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     path = '/home/carla_challenge/Desktop/francis/Scenic/examples/carla/Behavior_Prediction/' + args.path
-    falsifier = run_experiment(path, args.model, thresholds=tuple(args.threshold),
+    falsifier = run_experiment(path, args.model, thresholds=tuple(args.threshold), timepoint=args.timepoint,
         sampler_type=args.samplerType, num_workers=args.numWorkers, num_iters=args.numIters,
         headless=args.headless, debug=args.debug)
