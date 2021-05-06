@@ -121,7 +121,7 @@ def run_experiment(scenic_path, model_path, thresholds=None, timepoint=20,
     parallel = num_workers > 1
     params = {'verifaiSamplerType': sampler_type} if sampler_type else {}
     params['render'] = not headless
-    sampler = ScenicSampler.fromScenario(scenic_path, **params)
+    sampler = ScenicSampler.fromScenario(scenic_path, **params) if parallel else None  # NOTE: see if Kesav's fix works re: assertion error
     falsifier_params = DotMap(
         n_iters=num_iters,
         save_error_table=True,
