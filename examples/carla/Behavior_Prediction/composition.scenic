@@ -17,7 +17,8 @@ scenario IntersectionScenario(intersection, maneuver):
 
 scenario Main():
     setup:
-        ego = Car on road with FollowLaneBehavior(target_speed=5)
+        ego = Car on road,
+            with behavior FollowLaneBehavior(target_speed=5)
     compose:
         while True:
             inter = network.intersectionAt(ego.position)
