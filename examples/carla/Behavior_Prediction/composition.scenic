@@ -49,6 +49,4 @@ scenario Main():
         while True:
             inter = network.intersectionAt(ego.position)
             if inter is not None:
-                do choose LeftIntersectionScenario(inter), 
-                    RightIntersectionScenario(inter),
-                    StraightIntersectionScenario(inter)
+                do choose LeftIntersectionScenario(inter), RightIntersectionScenario(inter), StraightIntersectionScenario(inter)
