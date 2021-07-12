@@ -46,7 +46,8 @@ scenario Main():
         ego = Car on road,
             with behavior FollowLaneBehavior(target_speed=5)
     compose:
+        left, right, straight = LeftIntersectionScenario(inter), RightIntersectionScenario(inter), StraightIntersectionScenario(inter)
         while True:
             inter = network.intersectionAt(ego.position)
             if inter is not None:
-                do choose LeftIntersectionScenario(inter), RightIntersectionScenario(inter), StraightIntersectionScenario(inter)
+                do choose left, right, straight
